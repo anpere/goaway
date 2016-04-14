@@ -1,0 +1,5 @@
+---
+servers:
+  - localhost:9060
+  - localhost:9061
+  - localhost:9062
