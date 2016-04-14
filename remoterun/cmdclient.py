@@ -41,7 +41,8 @@ class CmdClient(object):
         resj = res.json()
         if "error" in resj:
             raise RpcException(resj["error"])
-        return resj["return"]
+        # return resj["return"]
+        return
 
     def _url(self, path):
         return "http://{}:{}/{}".format(self.host, self.port, path)

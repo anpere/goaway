@@ -49,7 +49,7 @@ class RemoteControl(object):
     def run_on_server(self, server_id, function_name, arg):
         host, port = self.server_addresses[server_id]
         result = CmdClient(host, port).run_remote(function_name, arg)
-        return result
+        return
 
     def random_server_id(self):
         return random.randrange(0, len(self.server_addresses))
