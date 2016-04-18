@@ -36,6 +36,12 @@ if __name__ == "main":
     #data = s.recv(1024)
     #print 'Received', repr(data)
 
+## User runs this function to start off system
+## probably will read the config file for info
+## on cluster config, and maybe imports
+def init():
+    ## TODO:
+
 def run(function, name):
     ## TODO: needs to interpret arguments
     print function
