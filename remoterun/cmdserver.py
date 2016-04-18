@@ -1,6 +1,5 @@
 """Cmd server."""
 from flask import Flask, request, jsonify
-import os
 import inspect
 import traceback
 import socket
@@ -9,7 +8,7 @@ import sys
 import math
 import time
 import threading
-
+import dummyFile
 
 app = Flask(__name__)
 
@@ -19,7 +18,6 @@ def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
-
 @app.route("/run", methods=["POST"])
 def run():
     call = request.json
@@ -27,18 +25,9 @@ def run():
     function_name = call["function_name"]
     function_arg = call["arg"]
 
-    dummy_functions = {
-        "square": lambda x: x * x,
-        "cube": lambda x: x * x * x,
-        "sqrt": lambda x: math.sqrt(x),
-        "sleep": lambda x: time.sleep(x),
-    }
+    ## TODO: check to see if function is in dummyFile
 
-    if not function_name in dummy_functions:
-        return jsonify({"error": "no such function"})
-
-    # Run the function in a thread and discard the result.
-    thread = threading.Thread(target=lambda: _run_in_thread(dummy_functions[function_name], function_arg))
+    thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), function_arg))
     thread.daemon = True
     thread.start()
 
@@ -46,6 +35,7 @@ def run():
 
 def _run_in_thread(function, arg):
     # Simulate a slow execution.
+    ## TODO: get rid of sleeps
     time.sleep(2)
     result = function(arg)
     print "Server result {}".format(result)
