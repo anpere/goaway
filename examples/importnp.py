@@ -10,7 +10,9 @@ def print_env(pprint, somearg):
     """
 
     print "Globals from other file:"
-    pprint(locals())
+    globals2 = globals()
+    globals2["__builtins__"] = "REDACTED"
+    pprint(globals2)
     print "(note the lack of __name__ and of count)"
     print
 
