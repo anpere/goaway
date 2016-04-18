@@ -10,7 +10,7 @@ locals is a dictionary from symbol names to values.
 """
 
 import inspect
-import numpy as np
+import math as mathymath
 
 def exec_verbose(expr, globalsd=None, localsd=None):
     """Wraps exec() and prints some stuff.
@@ -55,25 +55,25 @@ exec_verbose("print a, b", {"a": 3, "b": 4}, {"b": 5})
 print
 
 print "Refer to imports within this file."
-exec_verbose("print np.sin(0)")
+exec_verbose("print mathymath.sin(0)")
 # 0.0
 print
 
 print "Supplying globals kills imports."
-exec_verbose("print np.sin(0)", {})
-# exec failed: NameError name 'np' is not defined
+exec_verbose("print mathymath.sin(0)", {})
+# exec failed: NameError name 'mathymath' is not defined
 print
 
 print "You can simulate imports."
-exec_verbose("print np.sin(0)", {"np": np})
+exec_verbose("print mathymath.sin(0)", {"mathymath": mathymath})
 # 0.0
 print
 
 print "And do dirty tricks."
-class FakeNumpy(object):
+class FakeMathymath(object):
     def sin(self, x):
         return -1
-print inspect.getsource(FakeNumpy).strip()
-exec_verbose("print np.sin(0)", {"np": FakeNumpy()})
+print inspect.getsource(FakeMathymath).strip()
+exec_verbose("print mathymath.sin(0)", {"mathymath": FakeMathymath()})
 # -1
 print

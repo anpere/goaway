@@ -2,7 +2,7 @@
 This file exists to show what globals and locals look like
 from the perspective of an imported file.
 """
-import numpy as np
+import math as mathymath
 
 def print_env(pprint, somearg):
     """Print the globals and locals from here.
