@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 import inspect
 import traceback
+import os
 import socket
 import errno
 import sys
@@ -25,8 +26,7 @@ def run():
     function_name = call["function_name"]
     function_arg = call["arg"]
 
-    ## TODO: check to see if function is in dummyFile
-
+    ## TODO: check that dummyFile has function
     thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), function_arg))
     thread.daemon = True
     thread.start()
