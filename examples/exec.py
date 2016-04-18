@@ -64,7 +64,7 @@ exec_verbose("print np.sin(0)", {})
 # exec failed: NameError name 'np' is not defined
 print
 
-print "You can simulate them."
+print "You can simulate imports."
 exec_verbose("print np.sin(0)", {"np": np})
 # 0.0
 print

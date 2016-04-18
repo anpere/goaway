@@ -1,5 +1,5 @@
 """
-Example showing what globals() and locals() do.
+Examples showing what globals() and locals() do.
 """
 
 import importnp
@@ -7,7 +7,7 @@ from pprint import pprint
 
 def count(collection, element):
     """Count the number of occurrences of element in collection.
-    Also print locals"""
+    Also print locals."""
     c = 0
     for e2 in collection:
         if element == e2:

@@ -1,3 +1,7 @@
+"""
+This file exists to show what globals and locals look like
+from the perspective of an imported file.
+"""
 import numpy as np
 
 def print_env(pprint, somearg):
