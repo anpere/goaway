@@ -1,3 +1,6 @@
+"""
+Utility functions to get the IPs of this machine.
+"""
 from netifaces import interfaces, ifaddresses, AF_INET, AF_INET6
 
 def ipv4_addresses():
