@@ -17,6 +17,7 @@ class RemoteControl(object):
 
         self.myaddress = myaddress
         self.server_addresses = map(_split_server_address, self._config["servers"])
+        self.file_paths = map(_split_server_address, config["filepaths"])
 
         self._start_local_servers()
 
@@ -36,6 +37,13 @@ class RemoteControl(object):
                 ret = subprocess.call(["ssh", user + "@"+ host, "~/git/goaway/cmdserver"])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
+        for server_id in range(self.server_addresses):
+            _sync_server(server_id)
+
+    def _sync_server(self, server_id):
+        if host != self.myaddress:
+            user, host, port = self.server_addresses[server_id]
+            os.system('scp "%s" "%s:%s"' % (file_path, user + "@" + host, ) )
 
     def server_count(self):
         return len(self.server_addresses)
@@ -52,7 +60,7 @@ class RemoteControl(object):
             time.sleep(.5)
 
     def run_on_server(self, server_id, function_name, arg):
-        users, host, port = self.server_addresses[server_id]
+        user, host, port = self.server_addresses[server_id]
         result = CmdClient(user, host, port).run_remote(function_name, arg)
         return
 
