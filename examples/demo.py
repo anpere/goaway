@@ -1,6 +1,9 @@
 import time
 
-from remotecontrol import RemoteControl
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join("../goaway")))
+from goaway.remotecontrol import RemoteControl
 
 rc = RemoteControl(myaddress="localhost")
 

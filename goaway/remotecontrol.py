@@ -11,7 +11,8 @@ from cmdclient import CmdClient
 class RemoteControl(object):
     """Handle on remote goaway servers."""
     def __init__(self, myaddress=None):
-        with open("config.yaml", "r") as stream:
+        config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+        with open(config_path, "r") as stream:
             self._config = yaml.load(stream)
 
         self.myaddress = myaddress
