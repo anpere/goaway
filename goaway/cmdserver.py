@@ -21,12 +21,6 @@ def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
-@app.route("/sync", methods=["POST"])
-def sync():
-    """Syncs the file of the server."""
-    call = request.json
-    return jsonify({"ok": "ok"})
-
 @app.route("/run", methods=["POST"])
 def run():
     call = request.json
