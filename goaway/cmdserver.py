@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Cmd server."""
 from flask import Flask, request, jsonify
 import inspect
@@ -19,10 +20,12 @@ app = Flask(__name__)
 def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
+
 @app.route("/sync", methods=["POST"])
 def sync():
     """Syncs the file of the server."""
     call = request.json
+    return jsonify({"ok": "ok"})
 
 @app.route("/run", methods=["POST"])
 def run():
