@@ -3,7 +3,7 @@ servers:
   - localhost:9060
   - localhost:9061
   - localhost:9062
-  - 18.238.5.180:4050
+  - andresperez@18.238.5.180:4050
 filepaths:
-  - ../examples/ 
-  - ../tests/
+  - Documents/Year15/sp/goaway/examples/ 
+  - Documents/Year15/sp/goaway/tests/

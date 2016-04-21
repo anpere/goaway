@@ -19,11 +19,12 @@ class RemoteControl(object):
         self.server_addresses = map(_split_server_address, self._config["servers"])
         self.file_paths = map(_split_server_address, config["filepaths"])
 
-        self._start_local_servers()
+        self._start_servers()
 
         self.check_servers()
+        self._sync_servers()
 
-    def _start_local_servers(self):
+    def _start_servers(self):
         """Start any servers which are local."""
         for user, host, port in self.server_addresses:
             if host == self.myaddress:
@@ -38,12 +39,14 @@ class RemoteControl(object):
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(self.server_addresses):
-            _sync_server(server_id)
+            user, host, port = self.server_addresses[server_id]
+            if host != self.myaddress:
+                _sync_server(server_id)
 
     def _sync_server(self, server_id):
-        if host != self.myaddress:
-            user, host, port = self.server_addresses[server_id]
-            os.system('scp "%s" "%s:%s"' % (file_path, user + "@" + host, ) )
+        user, host, port = self.server_addresses[server_id]
+        for file_path in self.file_paths:
+            os.system('scp "%s" "%s:%s"' % (file_path, user + "@" + host, file_path) )
 
     def server_count(self):
         return len(self.server_addresses)
