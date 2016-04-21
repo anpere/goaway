@@ -4,3 +4,6 @@ servers:
   - localhost:9061
   - localhost:9062
   - 18.238.5.180:4050
+filepaths:
+  - ../examples/ 
+  - ../tests/

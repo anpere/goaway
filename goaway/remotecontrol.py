@@ -32,6 +32,10 @@ class RemoteControl(object):
                 # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
                 proc.daemon = True
                 proc.start()
+            else:
+                ret = subprocess.call(["ssh", "user@host", "~/git/goaway/cmdserver"])
+                ## need to start a proc on a different machine
+    def _sync_servers(self):
 
     def server_count(self):
         return len(self.server_addresses)

@@ -19,6 +19,10 @@ app = Flask(__name__)
 def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
+@app.route("/sync", methods=["POST"])
+def sync():
+    """Syncs the file of the server."""
+    call = request.json
 
 @app.route("/run", methods=["POST"])
 def run():
