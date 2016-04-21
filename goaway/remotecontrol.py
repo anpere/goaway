@@ -24,7 +24,7 @@ class RemoteControl(object):
 
     def _start_local_servers(self):
         """Start any servers which are local."""
-        for host, port in self.server_addresses:
+        for user, host, port in self.server_addresses:
             if host == self.myaddress:
                 print "Starting local server", host, port
                 proc = multiprocessing.Process(
@@ -33,7 +33,7 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                ret = subprocess.call(["ssh", "user@host", "~/git/goaway/cmdserver"])
+                ret = subprocess.call(["ssh", user + "@"+ host, "~/git/goaway/cmdserver"])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
 
@@ -62,7 +62,15 @@ class RemoteControl(object):
 
 def _split_server_address(server_string):
     """Split the likes of "18.5.5.5:9061" into ("18.5.5.5", 9061)."""
-    split = server_string.split(":")
-    assert len(split) == 2
-    host, port = split[0], int(split[1])
-    return host, port
+    user_ip = server_string.split("@")
+    if len(user_ip) == 2:
+        user, ip_address = user_ip[0], user_ip[1]
+        ip = ip_address.split(":")
+        assert len(ip) == 2
+        host, port = ip[0], int(ip[1])
+        return user, host, port
+    else:
+        ip_address = server_string.split(":")
+        assert len(ip) == 2
+        host, port = ip_address[0], int(ip_address[1])
+        return "", host, port
