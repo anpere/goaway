@@ -41,19 +41,19 @@ class RemoteControl(object):
         return len(self.server_addresses)
 
     def check_servers(self):
-        for host, port in self.server_addresses:
-            self._check_server(host, port)
+        for user, host, port in self.server_addresses:
+            self._check_server(user, host, port)
 
-    def _check_server(self, host, port):
+    def _check_server(self, user, host, port):
         # Try each server a few times.
         for _ in xrange(3):
-            if CmdClient(host, port).check():
+            if CmdClient(user, host, port).check():
                 return
             time.sleep(.5)
 
     def run_on_server(self, server_id, function_name, arg):
-        host, port = self.server_addresses[server_id]
-        result = CmdClient(host, port).run_remote(function_name, arg)
+        users, host, port = self.server_addresses[server_id]
+        result = CmdClient(user, host, port).run_remote(function_name, arg)
         return
 
     def random_server_id(self):

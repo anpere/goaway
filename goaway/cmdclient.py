@@ -11,7 +11,8 @@ class RpcException(Exception):
 
 
 class CmdClient(object):
-    def __init__(self, host, port):
+    def __init__(self, user, host, port):
+        self.user = user
         self.host = host
         self.port = port
 
