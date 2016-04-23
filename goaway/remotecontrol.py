@@ -19,10 +19,10 @@ class RemoteControl(object):
         self.server_addresses = map(_split_server_address, self._config["servers"])
         self.file_paths = map(_split_server_address, config["filepaths"])
 
+        self._sync_servers()
         self._start_servers()
 
         self.check_servers()
-        self._sync_servers()
 
     def _start_servers(self):
         """Start any servers which are local."""
