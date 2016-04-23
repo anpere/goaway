@@ -15,11 +15,20 @@ import dummyFile
 
 app = Flask(__name__)
 
+store = {}
+store_lock = threading.RLock()
+
+
+@app.route("/", methods=["GET"])
+def hello():
+    return jsonify({"ok": "ok", "hello": "friend"})
+
 
 @app.route("/check", methods=["GET"])
 def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
+
 
 @app.route("/run", methods=["POST"])
 def run():
@@ -34,6 +43,35 @@ def run():
     thread.start()
 
     return jsonify({"ok": "ok"})
+
+
+@app.route("/data", methods=["GET"])
+def data_get():
+    """
+    Get shared data from this server's local store.
+    """
+    key = request.json["key"]
+
+    with store_lock:
+        if key in store:
+            res = {
+                "value": store[key],
+            }
+        else:
+            res = {
+                "error": "NO_VAL_FOR_KEY",
+            }
+
+    return res
+
+
+@app.route("/data", methods=["POST"])
+def data_post():
+    """
+    Mutate shared data in this server's local store.
+    """
+    raise NotImplementedError()
+
 
 def _run_in_thread(function, arg):
     # Simulate a slow execution.
@@ -53,12 +91,14 @@ def start_server(port):
         app.run(host="0.0.0.0", port=port,
                 debug=debug, use_reloader=False)
     except socket.error as exc:
+        # Error when port in use.
         if exc.errno == errno.EADDRINUSE:
             print "Error: Could not start server on port {}. EADDRINUSE".format(port)
             sys.exit(-1)
         else:
             raise exc
     except KeyboardInterrupt:
+        # Error when killed by user.
         print "Server exiting on port {} due to KeyboardInterrupt.".format(port)
         sys.exit(0)
 
