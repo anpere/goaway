@@ -3,7 +3,6 @@ servers:
   - localhost:9060
   - localhost:9061
   - localhost:9062
-  - ubuntu@52.201.233.89:9060
   - andresperez@18.238.5.180:4050
 filepaths:
   - ~/goaway
