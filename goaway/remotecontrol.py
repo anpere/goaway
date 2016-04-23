@@ -36,7 +36,7 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                ret = subprocess.call(["ssh", user + "@"+ host, "~/git/goaway/cmdserver.py"])
+                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/cmdserver.py"])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
