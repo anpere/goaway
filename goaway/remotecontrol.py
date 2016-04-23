@@ -17,7 +17,7 @@ class RemoteControl(object):
 
         self.myaddress = myaddress
         self.server_addresses = map(_split_server_address, self._config["servers"])
-        self.file_paths = map(_split_server_address, config["filepaths"])
+        self.file_paths = map(_split_server_address, self._config["filepaths"])
 
         self._sync_servers()
         self._start_servers()
@@ -82,6 +82,6 @@ def _split_server_address(server_string):
         return user, host, port
     else:
         ip_address = server_string.split(":")
-        assert len(ip) == 2
+        assert len(ip_address) == 2
         host, port = ip_address[0], int(ip_address[1])
         return "", host, port
