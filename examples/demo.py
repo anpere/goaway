@@ -6,7 +6,9 @@ sys.path.append(os.path.abspath(os.path.join("../goaway")))
 from goaway.remotecontrol import RemoteControl
 from goaway.datastore import DataStore
 
-rc = RemoteControl(myaddress="localhost")
+
+config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+rc = RemoteControl(config_path, "localhost")
 db = DataStore()
 
 print "Server count", rc.server_count()

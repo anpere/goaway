@@ -13,8 +13,7 @@ import globalvars
 
 class RemoteControl(object):
     """Handle on remote goaway servers."""
-    def __init__(self, myaddress=None):
-        config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    def __init__(self, config_path, myaddress=None):
         with open(config_path, "r") as stream:
             self._config = ClusterConfig(yaml.load(stream))
             globalvars.config = self._config
