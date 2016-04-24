@@ -1,0 +1,8 @@
+---
+servers:
+  - localhost:9060
+  - localhost:9061
+  - localhost:9062
+  - andresperez@18.238.5.180:4050
+filepaths:
+  - ~/goaway
