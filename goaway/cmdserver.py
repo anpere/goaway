@@ -47,10 +47,10 @@ def run():
 
     function_name = call["function_name"]
     function_arg = call["arg"]
-
+    function_module = call["function_module"]
     ## TODO: check that dummyFile has function
     print "running %s(%s)" % (function_name, function_arg)
-    thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), function_arg))
+    thread = threading.Thread(target=lambda: _run_in_thread(getattr(function_module, function_name), function_arg))
     thread.daemon = True
     thread.start()
 

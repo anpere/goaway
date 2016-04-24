@@ -10,6 +10,7 @@ from cmdclient import CmdClient
 from config import ClusterConfig
 import globalvars
 import threading
+import pickle
 
 
 class RemoteControl(object):
@@ -74,10 +75,13 @@ class RemoteControl(object):
                 return
             time.sleep(.5)
 
-    def run_on_server(self, server_id, function_name, arg):
+    def run_on_server(self, server_id, functionPickle, arg):
         user, host, port = self.server_addresses[server_id]
+        depickledFunction = pickle.loads(functionPickle)
+        function_name = depickledFunction.__name__
+        function_module = depickledFunction.__module__
         print "running %s(%s) on %s:%s" % (function_name, arg, host, port)
-        result = CmdClient(user, host, port).run_remote(function_name, arg)
+        result = CmdClient(user, host, port).run_remote(function_module, function_name, arg)
         return
 
     def random_server_id(self):

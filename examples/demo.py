@@ -2,6 +2,7 @@ import time
 
 import sys
 import os
+import pickle
 sys.path.append(os.path.abspath(os.path.join("../goaway")))
 from goaway.remotecontrol import RemoteControl
 from goaway.datastore import DataStore
