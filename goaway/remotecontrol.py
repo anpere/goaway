@@ -49,7 +49,8 @@ class RemoteControl(object):
     def _sync_server(self, server_id):
         user, host, port = self.server_addresses[server_id]
         for file_path in self.file_paths:
-            os.system('scp "%s" "%s:%s"' % (file_path, user + "@" + host, file_path) )
+            print "scp -r %s %s:%s" % (file_path, user+"@"+host, file_path)
+            os.system('scp -r "%s" "%s:%s"' % (file_path, user + "@" + host, file_path) )
 
     def server_count(self):
         return len(self.server_addresses)

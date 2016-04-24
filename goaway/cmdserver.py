@@ -10,6 +10,7 @@ import sys
 import math
 import time
 import threading
+import imp
 ## AP: this will probably make somebody angry...
 import dummyFile
 import globalvars
@@ -114,7 +115,9 @@ def start_server(port, config):
     globalvars.config = config
     debug = os.environ.get("DEBUG", False) == "true"
     print "Server debug", "on" if debug else "off"
-    module_name, module_path = config.data["modules"].split(" ")
+    for module in config.data["modules"]:
+        module_name, module_path = module.split(" ")
+        imp.load_source(module_name, module_path)
     try:
         # Always disable auto-reloader.
         # It is dangerous when running as a subprocess.
