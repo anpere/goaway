@@ -1,5 +1,5 @@
 """ Example uses of goaway. Cases to remember to handle."""
-from goaway import *
+from goaway.goaway import *
 
 if __name__ == "__main__":
     init_master()
