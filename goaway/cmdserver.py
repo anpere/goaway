@@ -34,9 +34,15 @@ def check():
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
+@app.route("/kill", methods=["POST"])
+def kill():
+    #TODO: implement kill_server()
+    kill_server()
+    return "killed server"
 
 @app.route("/run", methods=["POST"])
 def run():
+    print "run recieved"
     call = request.json
 
     function_name = call["function_name"]
