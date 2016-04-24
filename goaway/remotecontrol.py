@@ -9,6 +9,7 @@ import cmdserver
 from cmdclient import CmdClient
 from config import ClusterConfig
 import globalvars
+import threading
 
 
 class RemoteControl(object):
@@ -40,8 +41,11 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                print "CONFIG Path: $GOAWAYPATH/%s" % ( self.config_path )
-                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)])
+                print "Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path)
+                thread = threading.Thread(
+                    target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)]))
+                thread.daemon = True
+                thread.start()
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
@@ -72,6 +76,7 @@ class RemoteControl(object):
 
     def run_on_server(self, server_id, function_name, arg):
         user, host, port = self.server_addresses[server_id]
+        print "running %s(%s) on %s:%s" % (function_name, arg, host, port)
         result = CmdClient(user, host, port).run_remote(function_name, arg)
         return
 

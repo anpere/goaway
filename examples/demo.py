@@ -22,8 +22,8 @@ def run_remote_verbose(server_id, function_name, arg):
 run_remote_verbose(0, "square", 2)
 run_remote_verbose(1, "cube", 2)
 run_remote_verbose(2, "sqrt", 2)
-
-run_remote_verbose(rc.random_server_id(), "square", 3)
+for serverId in range(rc.server_count()):
+    run_remote_verbose(serverId, "square", serverId)
 
 run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
