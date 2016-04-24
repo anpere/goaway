@@ -75,13 +75,10 @@ class RemoteControl(object):
                 return
             time.sleep(.5)
 
-    def run_on_server(self, server_id, functionPickle, arg):
+    def run_on_server(self, server_id, function_module, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
-        depickledFunction = pickle.loads(functionPickle)
-        function_name = depickledFunction.__name__
-        function_module = depickledFunction.__module__
         print "running %s(%s) on %s:%s" % (function_name, arg, host, port)
-        result = CmdClient(user, host, port).run_remote(function_module, function_name, arg)
+        result = CmdClient(user, host, port).run_remote(function_module, function_name, *arg, **kwargs)
         return
 
     def random_server_id(self):

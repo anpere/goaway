@@ -46,11 +46,12 @@ def run():
     call = request.json
 
     function_name = call["function_name"]
-    function_arg = call["arg"]
+    function_args = call["args"]
     function_module = call["function_module"]
+    function_kwargs = call["kwargs"]
     ## TODO: check that dummyFile has function
     print "running %s(%s)" % (function_name, function_arg)
-    thread = threading.Thread(target=lambda: _run_in_thread(getattr(function_module, function_name), function_arg))
+    thread = threading.Thread(target=lambda: _run_in_thread(getattr(function_module, function_name), *function_args, **function_kwargs))
     thread.daemon = True
     thread.start()
 
@@ -108,11 +109,11 @@ def data_set():
     return jsonify(res)
 
 
-def _run_in_thread(function, arg):
+def _run_in_thread(function, *args, **kwargs):
     # Simulate a slow execution.
     ## TODO: get rid of sleeps
     time.sleep(2)
-    result = function(arg)
+    result = function(*args, **kwargs)
     print "Server result {}".format(result)
 
 
