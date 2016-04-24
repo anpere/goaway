@@ -7,6 +7,8 @@ import yaml
 
 import cmdserver
 from cmdclient import CmdClient
+from config import ClusterConfig
+import globalvars
 
 
 class RemoteControl(object):
@@ -14,11 +16,12 @@ class RemoteControl(object):
     def __init__(self, myaddress=None):
         config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
         with open(config_path, "r") as stream:
-            self._config = yaml.load(stream)
+            self._config = ClusterConfig(yaml.load(stream))
+            globalvars.config = self._config
 
         self.myaddress = myaddress
-        self.server_addresses = map(_split_server_address, self._config["servers"])
-        self.file_paths = self._config["filepaths"]
+        self.server_addresses = self._config.servers
+        self.file_paths = self._config.data["filepaths"]
 
         self._sync_servers()
         self._start_servers()
@@ -31,7 +34,7 @@ class RemoteControl(object):
             if host == self.myaddress:
                 print "Starting local server", host, port
                 proc = multiprocessing.Process(
-                    target=lambda: cmdserver.start_server(port=port))
+                    target=lambda: cmdserver.start_server(port=port, config=self._config))
                 # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
                 proc.daemon = True
                 proc.start()
@@ -70,20 +73,3 @@ class RemoteControl(object):
 
     def random_server_id(self):
         return random.randrange(0, len(self.server_addresses))
-
-
-def _split_server_address(server_string):
-    """Split the likes of "18.5.5.5:9061" into ("18.5.5.5", 9061)."""
-    user_ip = server_string.split("@")
-    if len(user_ip) == 2:
-        user, ip_address = user_ip[0], user_ip[1]
-        ip = ip_address.split(":")
-        assert len(ip) == 2
-        host, port = ip[0], int(ip[1])
-        return user, host, port
-    else:
-        ip_address = server_string.split(":")
-        print ip_address
-        assert len(ip_address) == 2
-        host, port = ip_address[0], int(ip_address[1])
-        return "", host, port

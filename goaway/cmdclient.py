@@ -4,10 +4,7 @@ Client for communicating with a cmdserver.
 
 import requests
 
-
-class RpcException(Exception):
-    """An exception that occurs because of an RPC call."""
-    pass
+from common import RpcException
 
 
 class CmdClient(object):

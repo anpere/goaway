@@ -11,7 +11,8 @@ import math
 import time
 import threading
 ## AP: this will probably make somebody angry...
-import examples
+import dummyFile
+import globalvars
 
 app = Flask(__name__)
 
@@ -45,32 +46,55 @@ def run():
     return jsonify({"ok": "ok"})
 
 
-@app.route("/data", methods=["GET"])
+@app.route("/data/create", methods=["POST"])
+def data_create():
+    """
+    Initialize shared data in this server's local store.
+    """
+    path = request.json["path"]
+    default = request.json["default"]
+
+    with store_lock:
+        if path not in store:
+            store[path] = default
+
+    res = {"ok": "ok"}
+    return jsonify(res)
+
+
+@app.route("/data/get", methods=["GET"])
 def data_get():
     """
     Get shared data from this server's local store.
     """
-    key = request.json["key"]
+    path = request.json["path"]
 
     with store_lock:
-        if key in store:
+        if path in store:
             res = {
-                "value": store[key],
+                "value": store[path],
             }
         else:
             res = {
                 "error": "NO_VAL_FOR_KEY",
             }
 
-    return res
+    return jsonify(res)
 
 
-@app.route("/data", methods=["POST"])
-def data_post():
+@app.route("/data/set", methods=["POST"])
+def data_set():
     """
     Mutate shared data in this server's local store.
     """
-    raise NotImplementedError()
+    path = request.json["path"]
+    value = request.json["value"]
+
+    with store_lock:
+        store[path] = value
+
+    res = {"ok": "ok"}
+    return jsonify(res)
 
 
 def _run_in_thread(function, arg):
@@ -81,8 +105,13 @@ def _run_in_thread(function, arg):
     print "Server result {}".format(result)
 
 
-def start_server(port):
-    """Start the cmd server. This method is blocking."""
+def start_server(port, config):
+    """Start the cmd server. This method is blocking.
+    Args:
+        port: Port to run on.
+        config: Result of yaml.load'ing the config file.
+    """
+    globalvars.config = config
     debug = os.environ.get("DEBUG", False) == "true"
     print "Server debug", "on" if debug else "off"
     try:
