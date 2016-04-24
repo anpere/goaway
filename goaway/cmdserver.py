@@ -11,6 +11,8 @@ import math
 import time
 import threading
 import imp
+from config import ClusterConfig ## AP: imported so that main can create a config
+import yaml
 ## AP: this will probably make somebody angry...
 import dummyFile
 import globalvars
@@ -137,4 +139,8 @@ def start_server(port, config):
 
 
 if __name__ == "__main__":
-    start_server(port=9060)
+    assert len(sys.argv) == 2
+    config_path = sys.argv[1]
+    with open(config_path, "r") as stream:
+        config = ClusterConfig(yaml.load(stream))
+    start_server(9060, config)

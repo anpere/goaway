@@ -18,7 +18,9 @@ class RemoteControl(object):
             self._config = ClusterConfig(yaml.load(stream))
             globalvars.config = self._config
 
+
         self.myaddress = myaddress
+        self.config_path = config_path
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
@@ -38,7 +40,7 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/cmdserver.py"])
+                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/cmdserver.py %s" % (self.config_path)])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
@@ -48,9 +50,10 @@ class RemoteControl(object):
 
     def _sync_server(self, server_id):
         user, host, port = self.server_addresses[server_id]
-        for file_path in self.file_paths:
-            print "scp -r %s %s:%s" % (file_path, user+"@"+host, file_path)
-            os.system('scp -r "%s" "%s:%s"' % (file_path, user + "@" + host, file_path) )
+        for file_paths in self.file_paths:
+            src_path, trg_path = file_paths.split(" ")
+            print "rsync -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
+            os.system('scp -r "%s" "%s:%s"' % (src_path, user + "@" + host, trg_path))
 
     def server_count(self):
         return len(self.server_addresses)
