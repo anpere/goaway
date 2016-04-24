@@ -40,7 +40,8 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/init.sh %s" % (self.config_path)])
+                print "CONFIG Path: $GOAWAYPATH/%s" % ( self.config_path )
+                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):

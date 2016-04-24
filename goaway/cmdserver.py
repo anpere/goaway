@@ -15,6 +15,7 @@ from config import ClusterConfig ## AP: imported so that main can create a confi
 import yaml
 ## AP: this will probably make somebody angry...
 import dummyFile
+
 import globalvars
 
 app = Flask(__name__)
@@ -119,6 +120,8 @@ def start_server(port, config):
     print "Server debug", "on" if debug else "off"
     for module in config.data["modules"]:
         module_name, module_path = module.split(" ")
+        module_path = os.path.expandvars(module_path)
+        print module_name, module_path
         imp.load_source(module_name, module_path)
     try:
         # Always disable auto-reloader.
@@ -141,6 +144,8 @@ def start_server(port, config):
 if __name__ == "__main__":
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
+    print "Configpath :%s" % (config_path)
+    config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
     with open(config_path, "r") as stream:
         config = ClusterConfig(yaml.load(stream))
     start_server(9060, config)

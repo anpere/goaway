@@ -8,6 +8,7 @@ from goaway.datastore import DataStore
 
 
 config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+print "Config path::", config_path
 rc = RemoteControl(config_path, "localhost")
 db = DataStore()
 
