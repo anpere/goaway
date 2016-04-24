@@ -40,7 +40,7 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/cmdserver.py %s" % (self.config_path)])
+                ret = subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/init.sh %s" % (self.config_path)])
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
@@ -52,8 +52,8 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
-            print "rsync -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
-            os.system('scp -r "%s" "%s:%s"' % (src_path, user + "@" + host, trg_path))
+            print "rspnc -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
+            os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git", src_path, user + "@" + host, trg_path))
 
     def server_count(self):
         return len(self.server_addresses)
