@@ -75,12 +75,15 @@ class RemoteControl(object):
                 return
             time.sleep(.5)
 
-    def run_on_server(self, function_name, *args, **kwargs):
-        server_id = self.random_server_id()
+    def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
         print "running %s(%s) on %s:%s" % (function_name, args, host, port)
         result = CmdClient(user, host, port).run_remote(function_name, *args, **kwargs)
         return
+
+    def goaway(self, file_name, function_name, *args, **kwargs):
+        server_id = self.random_server_id()
+        self.run_on_server(server_id, file_name, function_name, *args, **kwargs)
 
 
     def random_server_id(self):

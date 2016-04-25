@@ -18,5 +18,7 @@ def goaway(fn, *args, **kwargs):
     source = inspect.getsource(fn)
     name = fn.__name__
     print "goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs)
+    print
     ## TODO: probably take a pickled function
-    globalvars.rc.run_on_server(name, *args, **kwargs)
+    file_name = inspect.getfile(fn)
+    globalvars.rc.goaway(file_name, name, *args, **kwargs)
