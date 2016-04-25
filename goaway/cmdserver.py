@@ -116,7 +116,8 @@ def _run_in_thread(function, *args, **kwargs):
     print kwargs
     # Simulate a slow execution.
     ## TODO: get rid of sleeps
-    time.sleep(2)
+    ## time.sleep(2)
+    ## AP: had to get rid of time.sleep(2) because it wasn't working with it
     result = function(*args, **kwargs)
     print "Server result {}".format(result)
 
