@@ -51,7 +51,8 @@ def run():
     # function_module = call["function_module"]
     function_kwargs = call["kwargs"]
     ## TODO: check that dummyFile has function
-    thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), function_args, function_kwargs))
+    print "server now running: %s(%s,%s)" % (getattr(dummyFile, function_name).__name__, function_args, function_kwargs)
+    thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), *function_args, **function_kwargs))
     thread.daemon = True
     thread.start()
 
@@ -110,10 +111,12 @@ def data_set():
 
 
 def _run_in_thread(function, *args, **kwargs):
+    print "in thread"
+    print args
+    print kwargs
     # Simulate a slow execution.
     ## TODO: get rid of sleeps
     time.sleep(2)
-    print "running %s(%s)" %(function, args)
     result = function(*args, **kwargs)
     print "Server result {}".format(result)
 

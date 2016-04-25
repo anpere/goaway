@@ -17,6 +17,6 @@ def goaway(fn, *args, **kwargs):
     """ fn is a function, not a string. Its args are *args & **kwargs """
     source = inspect.getsource(fn)
     name = fn.__name__
-    print "calling %s(%s, %s)" % (fn.__name__, args, kwargs)
-    print name + " is going away...."
-    globalvars.rc.run_on_server(fn, *args)
+    print "goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs)
+    ## TODO: probably take a pickled function
+    globalvars.rc.run_on_server(name, *args, **kwargs)
