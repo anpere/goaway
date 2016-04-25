@@ -15,7 +15,7 @@ goaway repo:
 # Config file
  - goaway reads from a config file to determine where the goaway application is, and the names of the remote servers.
  - Same config.yaml file:
-   `
+   ```
    ---
    servers: 
      - localhost:9060
@@ -24,5 +24,5 @@ goaway repo:
      - $GOAWAYPATH/ $GOAWAYPATH/target/machine/file/path
    modules:
      - application_module $GOAWAYPATH/application_module
-   `
+   ```
 
