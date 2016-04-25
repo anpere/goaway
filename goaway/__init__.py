@@ -1,5 +1,7 @@
 import inspect
+import random
 import globalvars
+from remotecontrol import RemoteControl
 ## User runs this function to start off system
 ## probably will read the config file for info
 ## on cluster config, and maybe imports
@@ -15,5 +17,6 @@ def goaway(fn, *args, **kwargs):
     """ fn is a function, not a string. Its args are *args & **kwargs """
     source = inspect.getsource(fn)
     name = fn.__name__
+    print "calling %s(%s, %s)" % (fn.__name__, args, kwargs)
     print name + " is going away...."
     globalvars.rc.run_on_server(fn, *args)
