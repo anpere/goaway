@@ -58,7 +58,7 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
-            print "rspnc -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
+            print "rsync -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
             os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git", src_path, user + "@" + host, trg_path))
 
     def server_count(self):
@@ -75,10 +75,10 @@ class RemoteControl(object):
                 return
             time.sleep(.5)
 
-    def run_on_server(self, server_id, function_module, function_name, *args, **kwargs):
+    def run_on_server(self, server_id, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
-        print "running %s(%s) on %s:%s" % (function_name, arg, host, port)
-        result = CmdClient(user, host, port).run_remote(function_module, function_name, *arg, **kwargs)
+        print "running %s(%s) on %s:%s" % (function_name, args, host, port)
+        result = CmdClient(user, host, port).run_remote(function_name, args, kwargs)
         return
 
     def random_server_id(self):

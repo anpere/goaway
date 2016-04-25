@@ -1,6 +1,10 @@
+import sys
+print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
+run = raw_input("Continue [y/N]")
+if run != 'y':
+    sys.exit(0)
 import time
 
-import sys
 import os
 import pickle
 sys.path.append(os.path.abspath(os.path.join("../goaway")))
@@ -19,7 +23,6 @@ def run_remote_verbose(server_id, function_name, arg):
     print "-> Running {}({}) on server {}".format(function_name, arg, server_id)
     rc.run_on_server(server_id, function_name, arg)
     print "<- Remote thread started"
-
 run_remote_verbose(0, "square", 2)
 run_remote_verbose(1, "cube", 2)
 run_remote_verbose(2, "sqrt", 2)

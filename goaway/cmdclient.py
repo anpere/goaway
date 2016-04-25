@@ -28,8 +28,8 @@ class CmdClient(object):
     def run_remote(self, function_module, function_name, *args, **kwargs):
         payload = {
             "function_name": function_name,
-            "args": *args,
-            "kwargs" : **kwargs,
+            "args": args,
+            "kwargs" : kwargs,
             "function_module": function_module
         }
         try:
