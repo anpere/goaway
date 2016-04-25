@@ -25,13 +25,15 @@ class CmdClient(object):
         if res.status_code != 200:
             return False
 
-    def run_remote(self, function_module, function_name, *args, **kwargs):
+        ## TODO: take function_module
+    def run_remote(self, function_name, *args, **kwargs):
         payload = {
             "function_name": function_name,
             "args": args,
             "kwargs" : kwargs,
-            "function_module": function_module
+            ## TODO: "function_module": function_module
         }
+        print payload
         try:
             res = requests.post(self._url("run"), json=payload)
         except Exception as ex:

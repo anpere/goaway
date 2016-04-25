@@ -13,6 +13,7 @@ from goaway.datastore import DataStore
 
 
 config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+num_of_servers = 3
 print "Config path::", config_path
 rc = RemoteControl(config_path, "localhost")
 db = DataStore()
@@ -23,17 +24,20 @@ def run_remote_verbose(server_id, function_name, *args):
     print "-> Running {}({}) on server {}".format(function_name, args, server_id)
     rc.run_on_server(server_id, function_name, *args)
     print "<- Remote thread started"
-run_remote_verbose(0, "square", (2))
-run_remote_verbose(1, "cube", 2)
-run_remote_verbose(2, "sqrt", 2)
-for serverId in range(rc.server_count()):
-    run_remote_verbose(serverId, "square", serverId)
 
-run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
-run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
-run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
+if __name__ == "__main__":
+    init_master()
 
-time.sleep(3)
-print db.create("tweedle_dee_value_path", default="LAST")
-print "And now, for the final result:"
-print db.get("tweedle_dee_value_path")
+    for i in range(num_of_servers):
+        goaway(square(2))
+        goaway(cube(2))
+        goaway(sqrt(2))
+
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
+##
+## time.sleep(3)
+## print db.create("tweedle_dee_value_path", default="LAST")
+## print "And now, for the final result:"
+## print db.get("tweedle_dee_value_path")
