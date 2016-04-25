@@ -111,9 +111,6 @@ def data_set():
 
 
 def _run_in_thread(function, *args, **kwargs):
-    print "in thread"
-    print args
-    print kwargs
     # Simulate a slow execution.
     ## TODO: get rid of sleeps
     ## time.sleep(2)
