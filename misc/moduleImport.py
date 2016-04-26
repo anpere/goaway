@@ -9,4 +9,8 @@ module_file, module_pathname, module_description = imp.find_module(module_name)
 module = imp.load_module(module_name, module_file, module_pathname, module_description)
 print module
 function = getattr(module, "print_env")
+
 print inspect.getsource(function)
+print function.__name__
+secFunc = getattr(module_name, "print_env")
+print inspect.getsource(secFunc)

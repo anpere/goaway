@@ -51,12 +51,16 @@ def run():
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
     ## TODO: check that dummyFile has function
-    print "server now running: %s(%s,%s)" % (getattr(dummyFile, function_name).__name__, function_args, function_kwargs)
     module_name = inspect.getmodulename(function_path)
-    print module_name
-    module = imp.find_module(module_name, function_path)
-    if module not in getModules():
+    module_file, module_pathname, module_description = imp.find_module(module_name)
+    module = imp.load_module(module_name, module_file, module_pathname, module_description)
+    '''
+    todo: maybe not needed
+    if module_na not in getModules():
         imp.load_source(module_name, function_path)
+    print module
+    '''
+    print "server now running: %s(%s,%s)" % (getattr(module, function_name).__name__, function_args, function_kwargs)
     thread = threading.Thread(target=lambda: _run_in_thread(getattr(module, function_name), *function_args, **function_kwargs))
     thread.daemon = True
     thread.start()
