@@ -1,8 +1,12 @@
+import sys
+import os
 """ Example uses of goaway. Cases to remember to handle."""
-from goaway.goaway import *
+sys.path.append(os.path.abspath(os.path.join("../goaway")))
+from goaway import *
 
 if __name__ == "__main__":
-    init_master()
+    config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    init_master(config_path)
 
     """ Non-global reference """
     def f():

@@ -1,1 +1,2 @@
 cmdserver starts up default on port 9060, regardless of what port config file tells it to
+shell never exits after cmd server has begun, maybe that's okay.
