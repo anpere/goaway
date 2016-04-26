@@ -12,6 +12,7 @@ import globalvars
 import threading
 import pickle
 
+max_tries = 3
 
 class RemoteControl(object):
     """Handle on remote goaway servers."""
@@ -43,10 +44,17 @@ class RemoteControl(object):
                 proc.start()
             else:
                 print "Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path)
+                #  subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)])
+
                 thread = threading.Thread(
-                    target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)]))
+                target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)]))
                 thread.daemon = True
                 thread.start()
+                while (not self._check_server(user, host, port)):
+                    continue
+                print "server %s@%s:%s is up" %(user, host, port)
+
+
                 ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
@@ -68,12 +76,14 @@ class RemoteControl(object):
         for user, host, port in self.server_addresses:
             self._check_server(user, host, port)
 
+    ''' returns True if and only if the target server responds '''
     def _check_server(self, user, host, port):
         # Try each server a few times.
-        for _ in xrange(3):
+        for _ in xrange(max_tries):
             if CmdClient(user, host, port).check():
-                return
+                return True
             time.sleep(.5)
+        return False
 
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]

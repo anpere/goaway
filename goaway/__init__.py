@@ -1,13 +1,15 @@
 import inspect
 import random
+import time
 import globalvars
 from remotecontrol import RemoteControl
 ## User runs this function to start off system
 ## probably will read the config file for info
 ## on cluster config, and maybe imports
 def init_master(config_path):
+    print "starting master ..."
     globalvars.rc = RemoteControl(config_path, "localhost")
-    print "init master"
+    print "started master"
     pass
 
 def init_slave():
