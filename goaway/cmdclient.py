@@ -26,12 +26,12 @@ class CmdClient(object):
             return False
 
         ## TODO: take function_module
-    def run_remote(self, function_name, *args, **kwargs):
+    def run_remote(self, file_name, function_name, *args, **kwargs):
         payload = {
             "function_name": function_name,
             "args": args,
             "kwargs" : kwargs,
-            ## TODO: "function_module": function_module
+            "function_file": file_name
         }
         print payload
         try:

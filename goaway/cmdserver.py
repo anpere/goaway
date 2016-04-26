@@ -11,6 +11,7 @@ import math
 import time
 import threading
 import imp
+import types
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
 ## AP: this will probably make somebody angry...
@@ -47,12 +48,16 @@ def run():
 
     function_name = call["function_name"]
     function_args = call["args"]
-    ## TODO: add function_module
-    # function_module = call["function_module"]
+    function_path = call["function_file"]
     function_kwargs = call["kwargs"]
     ## TODO: check that dummyFile has function
     print "server now running: %s(%s,%s)" % (getattr(dummyFile, function_name).__name__, function_args, function_kwargs)
-    thread = threading.Thread(target=lambda: _run_in_thread(getattr(dummyFile, function_name), *function_args, **function_kwargs))
+    module_name = inspect.getmodulename(function_path)
+    print module_name
+    module = imp.find_module(module_name, function_path)
+    if module not in getModules():
+        imp.load_source(module_name, function_path)
+    thread = threading.Thread(target=lambda: _run_in_thread(getattr(module, function_name), *function_args, **function_kwargs))
     thread.daemon = True
     thread.start()
 
@@ -150,6 +155,12 @@ def start_server(port, config):
         print "Server exiting on port {} due to KeyboardInterrupt.".format(port)
         sys.exit(0)
 
+## imported from http://stackoverflow.com/questions/4858100/how-to-list-imported-modules
+def getModules():
+    modules = []
+    for name, val in globals().items():
+        if isInstance(val, types.ModuleType):
+            modules.append(val.__name__)
 
 if __name__ == "__main__":
     assert len(sys.argv) == 2

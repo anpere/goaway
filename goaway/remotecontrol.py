@@ -78,7 +78,7 @@ class RemoteControl(object):
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
         print "running %s(%s) on %s:%s" % (function_name, args, host, port)
-        result = CmdClient(user, host, port).run_remote(function_name, *args, **kwargs)
+        result = CmdClient(user, host, port).run_remote(file_name, function_name, *args, **kwargs)
         return
 
     def goaway(self, file_name, function_name, *args, **kwargs):
