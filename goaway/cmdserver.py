@@ -14,8 +14,6 @@ import imp
 import types
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
-## AP: this will probably make somebody angry...
-import dummyFile
 
 import globalvars
 
@@ -50,7 +48,6 @@ def run():
     function_args = call["args"]
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
-    ## TODO: check that dummyFile has function
     module_name = inspect.getmodulename(function_path)
     module_file, module_pathname, module_description = imp.find_module(module_name)
     module = imp.load_module(module_name, module_file, module_pathname, module_description)
