@@ -21,7 +21,8 @@ app = Flask(__name__)
 
 store = {}
 store_lock = threading.RLock()
-
+print "this runs all the time"
+server_log = open("server.log", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
 def hello():
@@ -51,7 +52,7 @@ def kill_server():
 
 @app.route("/run", methods=["POST"])
 def run():
-    print "run recieved"
+    debug("run recieved")
     call = request.json
 
     function_name = call["function_name"]
@@ -142,18 +143,21 @@ def start_server(port, config):
         config: Result of yaml.load'ing the config file.
     """
     globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
-    debug = os.environ.get("DEBUG", False) == "true"
-    print "Server debug", "on" if debug else "off"
+    debugOn = os.environ.get("DEBUG", False) == "true"
+    print "Server debug", "on" if debugOn else "off"
+    debug("starting server")
+    ''' TODO
     for module in config.data["modules"]:
         module_name, module_path = module.split(" ")
         module_path = os.path.expandvars(module_path)
         print module_name, module_path
         imp.load_source(module_name, module_path)
+    '''
     try:
         # Always disable auto-reloader.
         # It is dangerous when running as a subprocess.
         app.run(host="0.0.0.0", port=port,
-                debug=debug, use_reloader=False)
+                debug=debugOn, use_reloader=False)
     except socket.error as exc:
         # Error when port in use.
         if exc.errno == errno.EADDRINUSE:
@@ -173,11 +177,17 @@ def getModules():
         if isInstance(val, types.ModuleType):
             modules.append(val.__name__)
 
+def debug(message):
+    server_log.write(message+"\n")
+    server_log.flush()
+
 if __name__ == "__main__":
+    print "HELLO"
+    debug("main is running")
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
     print "Configpath :%s" % (config_path)
-    config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
+    # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
     with open(config_path, "r") as stream:
         config = ClusterConfig(yaml.load(stream))
     start_server(9060, config)

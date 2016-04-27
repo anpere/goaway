@@ -21,8 +21,6 @@ if __name__ == "__main__":
     num_of_servers = 3
 
     init_master(config_path)
-    while True:
-        continue
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)

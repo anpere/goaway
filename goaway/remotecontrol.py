@@ -29,10 +29,16 @@ class RemoteControl(object):
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
+        ## this line shows that as of now, remote servers never die
+        print "servers alive before started? ..."
+        serversAlive = self.check_servers()
+        print serversAlive
         self._sync_servers()
+        print "servers alive after sync?: %s " % (self.check_servers())
         self._start_servers()
 
-        self.check_servers()
+        serversAlive = self.check_servers()
+        print "servers alive after started? %s" % (serversAlive)
 
     def _start_servers(self):
         """Start any servers which are local."""
@@ -46,12 +52,12 @@ class RemoteControl(object):
                 proc.start()
             else:
                 print "Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path)
-                #  subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)])
+                # subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh ; ~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)])
 
                 thread = threading.Thread(
-                target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)]))
+                    target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh ; ~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)]))
                 thread.daemon = True
-                # thread.start()
+                thread.start()
                 while (not self._check_server(user, host, port)):
                     continue
                 print "server %s@%s:%s is up" %(user, host, port)
