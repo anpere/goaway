@@ -1,3 +1,5 @@
+import signal
+import sys
 """
 Globals variables.
 
@@ -12,3 +14,12 @@ config = None
 
 # RC initialized by Goaway.__init__.
 rc = None
+def sigint(a, b):
+    print "Why you trying to globally kill me?"
+    beforeKill = rc.check_servers()
+    print "Servers Alive before kill?:%s" % (beforeKill)
+    rc.kill_servers()
+    afterKill = rc.check_servers()
+    print "Servers Alive after kill?:%s" % (afterKill)
+    ## Kill all the running servers
+    sys.exit(0)

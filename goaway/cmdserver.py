@@ -39,6 +39,16 @@ def kill():
     kill_server()
     return "killed server"
 
+def kill_server():
+    print "killed!!"
+    func = request.environ.get('werkzeug.server.shutdown')
+    ok = "killed"
+    if func is None:
+        ok = "alive"
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    return jsonify({"ok": ok})
+
 @app.route("/run", methods=["POST"])
 def run():
     print "run recieved"

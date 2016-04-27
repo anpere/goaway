@@ -4,6 +4,7 @@ import multiprocessing
 import subprocess
 import time
 import yaml
+import signal
 
 import cmdserver
 from cmdclient import CmdClient
@@ -13,6 +14,7 @@ import threading
 import pickle
 
 max_tries = 3
+
 
 class RemoteControl(object):
     """Handle on remote goaway servers."""
@@ -49,7 +51,7 @@ class RemoteControl(object):
                 thread = threading.Thread(
                 target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh $GOAWAYPATH/%s" % (self.config_path)]))
                 thread.daemon = True
-                thread.start()
+                # thread.start()
                 while (not self._check_server(user, host, port)):
                     continue
                 print "server %s@%s:%s is up" %(user, host, port)
@@ -73,8 +75,11 @@ class RemoteControl(object):
         return len(self.server_addresses)
 
     def check_servers(self):
+        allAlive = True
         for user, host, port in self.server_addresses:
-            self._check_server(user, host, port)
+            allAlive &= self._check_server(user, host, port)
+        return allAlive
+
 
     ''' returns True if and only if the target server responds '''
     def _check_server(self, user, host, port):
@@ -84,6 +89,14 @@ class RemoteControl(object):
                 return True
             time.sleep(.5)
         return False
+
+    def kill_servers(self):
+        print "killing all servers!"
+        for user, host, port in self.server_addresses:
+            self._kill_server(user, host, port)
+
+    def _kill_server(self, user, host, port):
+        CmdClient(user, host, port).kill()
 
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]

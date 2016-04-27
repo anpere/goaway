@@ -25,7 +25,17 @@ class CmdClient(object):
         if res.status_code != 200:
             return False
 
-        ## TODO: take function_module
+    def kill(self):
+        """Kills the mentioned server
+        """
+        try:
+            res = request.post(self._url("kill"))
+            return True
+        except Exception as ex:
+            return False
+        if res.status_code != 200:
+            return False
+
     def run_remote(self, file_name, function_name, *args, **kwargs):
         payload = {
             "function_name": function_name,
