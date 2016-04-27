@@ -55,7 +55,7 @@ class RemoteControl(object):
                 # subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh ; ~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)])
 
                 thread = threading.Thread(
-                    target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/run.sh ; ~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)]))
+                    target=lambda: subprocess.call(["ssh", user + "@"+ host, "~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)]))
                 thread.daemon = True
                 thread.start()
                 while (not self._check_server(user, host, port)):

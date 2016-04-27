@@ -54,6 +54,7 @@ def kill_server():
 def run():
     debug("run recieved")
     call = request.json
+    print "run recieved"
 
     function_name = call["function_name"]
     function_args = call["args"]
@@ -172,6 +173,7 @@ def start_server(port, config):
 
 ## imported from http://stackoverflow.com/questions/4858100/how-to-list-imported-modules
 def getModules():
+    ''' Returns a list of the modules that have been  imported '''
     modules = []
     for name, val in globals().items():
         if isInstance(val, types.ModuleType):
