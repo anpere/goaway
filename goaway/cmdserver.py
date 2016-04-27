@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Cmd server."""
 from flask import Flask, request, jsonify
+import logging
+from logging.handlers import RotatingFileHandler
 import inspect
 import traceback
 import os
@@ -55,14 +57,15 @@ def kill_server():
 @app.route("/run", methods=["POST"])
 def run():
     debug("run recieved")
+    app.logger.info("run recieved")
     call = request.json
     print "run recieved"
 
-    return
     function_name = call["function_name"]
     function_args = call["args"]
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
+    app.logger.warning("file:%s"%(function_path))
     module_name = inspect.getmodulename(function_path)
     module_file, module_pathname, module_description = imp.find_module(module_name)
     module = imp.load_module(module_name, module_file, module_pathname, module_description)
@@ -72,7 +75,7 @@ def run():
         imp.load_source(module_name, function_path)
     print module
     '''
-    print "server now running: %s(%s,%s)" % (getattr(module, function_name).__name__, function_args, function_kwargs)
+    app.logger.info("server now running: %s(%s,%s)" % (getattr(module, function_name).__name__, function_args, function_kwargs))
     thread = threading.Thread(target=lambda: _run_in_thread(getattr(module, function_name), *function_args, **function_kwargs))
     thread.daemon = True
     thread.start()
@@ -161,8 +164,12 @@ def start_server(port, config):
         # Always disable auto-reloader.
         # It is dangerous when running as a subprocess.
         handler = RotatingFileHandler('server.log', maxBytes=10000, backupCount=1)
+        formatter = logging.Formatter(
+            "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
         handler.setLevel(logging.INFO)
+        handler.setFormatter(formatter)
         app.logger.addHandler(handler)
+        app.logger.warning("running app")
         app.run(host="0.0.0.0", port=port,
                 debug=debugOn, use_reloader=False)
     except socket.error as exc:
