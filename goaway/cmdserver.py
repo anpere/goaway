@@ -15,7 +15,7 @@ import types
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
 
-import globalvars
+import globalvars ## AP: removed to temporarily fix problems with ^C
 
 app = Flask(__name__)
 
@@ -141,7 +141,7 @@ def start_server(port, config):
         port: Port to run on.
         config: Result of yaml.load'ing the config file.
     """
-    globalvars.config = config
+    globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
     debug = os.environ.get("DEBUG", False) == "true"
     print "Server debug", "on" if debug else "off"
     for module in config.data["modules"]:

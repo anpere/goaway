@@ -8,15 +8,16 @@ from remotecontrol import RemoteControl
 ## probably will read the config file for info
 ## on cluster config, and maybe imports
 
-signal.signal(signal.SIGINT, globalvars.sigint)
-signal.siginterrupt(signal.SIGINT, False)
 def init_master(config_path):
     print "starting master ..."
     globalvars.rc = RemoteControl(config_path, "localhost")
-    print "started master"
-    while True:
-        continue
-    pass
+    print "in init ref of rc %s" % (globalvars.rc.__hash__)
+    serversAlive = globalvars.rc.check_servers()
+    print "started master. serversAlive? %s" % (serversAlive)
+    ## This needs to happen after forking.
+    ## If it happens before, every command server will execute the ctrl-c hook
+    signal.signal(signal.SIGINT, globalvars.sigint)
+    signal.siginterrupt(signal.SIGINT, False)
 
 def init_slave():
     pass
