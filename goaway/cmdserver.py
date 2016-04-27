@@ -56,6 +56,7 @@ def run():
     call = request.json
     print "run recieved"
 
+    return
     function_name = call["function_name"]
     function_args = call["args"]
     function_path = call["function_file"]
