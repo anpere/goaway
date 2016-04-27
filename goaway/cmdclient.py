@@ -15,11 +15,13 @@ class CmdClient(object):
 
     def check(self):
         """Check server health.
-        Returns a boolean as to weather the server was reached.
+        Returns a boolean as to wether the server was reached.
         """
         try:
             res = requests.get(self._url("check"))
-            return True
+            resj = res.json()
+            print resj
+            return resj["ok"]=="ok"
         except Exception as ex:
             return False
         if res.status_code != 200:

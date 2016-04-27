@@ -15,6 +15,10 @@ config = None
 print "rc set to None!!!"
 rc = None
 def sigint(a, b):
+    ''' This runs when user kills the program.
+        Original intention is to kill the remote servers
+        When the user is finished using goaway '''
+
     print "Why you trying to globally kill me?"
     print "ref of rc in globalvars %s" % (rc.__hash__)
     beforeKill = rc.check_servers()
@@ -22,5 +26,4 @@ def sigint(a, b):
     rc.kill_servers()
     afterKill = rc.check_servers()
     print "Servers Alive after kill?:%s" % (afterKill)
-    ## Kill all the running servers
     sys.exit(0)

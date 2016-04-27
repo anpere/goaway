@@ -22,7 +22,7 @@ app = Flask(__name__)
 store = {}
 store_lock = threading.RLock()
 print "this runs all the time"
-server_log = open("server.log", 'w') ## TODO: handle multiple ports
+server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
 def hello():
@@ -31,6 +31,8 @@ def hello():
 
 @app.route("/check", methods=["GET"])
 def check():
+    app.logger.info("server was checked on")
+    debug("server was checked on")
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
@@ -158,6 +160,9 @@ def start_server(port, config):
     try:
         # Always disable auto-reloader.
         # It is dangerous when running as a subprocess.
+        handler = RotatingFileHandler('server.log', maxBytes=10000, backupCount=1)
+        handler.setLevel(logging.INFO)
+        app.logger.addHandler(handler)
         app.run(host="0.0.0.0", port=port,
                 debug=debugOn, use_reloader=False)
     except socket.error as exc:
@@ -181,8 +186,8 @@ def getModules():
             modules.append(val.__name__)
 
 def debug(message):
-    server_log.write(message+"\n")
-    server_log.flush()
+    server_debug.write(message+"\n")
+    server_debug.flush()
 
 if __name__ == "__main__":
     print "HELLO"

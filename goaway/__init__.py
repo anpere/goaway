@@ -14,7 +14,7 @@ def init_master(config_path):
     print "in init ref of rc %s" % (globalvars.rc.__hash__)
     serversAlive = globalvars.rc.check_servers()
     print "started master. serversAlive? %s" % (serversAlive)
-    ## This needs to happen after forking.
+    ## Sets the hook for interrupts. This needs to happen after forking.
     ## If it happens before, every command server will execute the ctrl-c hook
     signal.signal(signal.SIGINT, globalvars.sigint)
     signal.siginterrupt(signal.SIGINT, False)
@@ -27,7 +27,8 @@ def goaway(fn, *args, **kwargs):
     source = inspect.getsource(fn)
     name = fn.__name__
     print "goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs)
-    print
     ## TODO: probably take a pickled function
     file_name = inspect.getfile(fn)
+    print "in goaway ref of rc %s" % (globalvars.rc.__hash__)
+    print "at least one server alive before goaway call? %s" % (globalvars.rc.check_servers())
     globalvars.rc.goaway(file_name, name, *args, **kwargs)

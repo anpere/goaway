@@ -55,7 +55,7 @@ class RemoteControl(object):
                 remoteHost = "%s@%s" % (user, host)
                 command = "~/goaway/goaway/run.sh ; ~/goaway/goaway/cmdserver.py ~/goaway/%s" % (self.config_path)
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
-                sshOpen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
+                sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
 
                 ## Wait until server is up and running
                 while (not self._check_server(user, host, port)):
