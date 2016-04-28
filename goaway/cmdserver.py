@@ -57,7 +57,7 @@ def kill_server():
 @app.route("/run", methods=["POST"])
 def run():
     debug("run recieved")
-    app.logger.info("run recieved")
+    app.logger.warning("run recieved")
     call = request.json
     print "run recieved"
 
