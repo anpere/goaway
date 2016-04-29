@@ -34,8 +34,8 @@ if __name__ == "__main__":
         goaway(add, i, 1)
         goaway(add, i, 2*i)
     for i in range(num_of_servers):
-        goaway(add, i, b=0)
-        goaway(add, i, b=2*i)
+        goaway(addKey, i, b=0)
+        goaway(addKey, i, b=2*i)
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
