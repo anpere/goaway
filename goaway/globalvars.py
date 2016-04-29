@@ -10,6 +10,7 @@ to get access to information that the goaway server has put here.
 # Initialized by cmdserver.start_server.
 # Initialized by RemoteControl.__init__.
 config = None
+dsm = None
 
 # RC initialized by Goaway.__init__.
 print "rc set to None!!!"

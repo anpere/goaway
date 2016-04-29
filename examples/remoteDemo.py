@@ -18,7 +18,7 @@ def addKey(a, b=0):
     return a+b
 def mathSqrt(x):
     return math.sqrt(x)
-def grow_shared(dsm, append_string):
+def grow_shared(append_string):
     """Grow a shared string.
     Appends append_string to the shared string.
     This is not an atomic operation and may lose append_string.
@@ -26,13 +26,13 @@ def grow_shared(dsm, append_string):
     # The path or key is the address of the shared value.
     data_path = "tweedle_dee_value_path"
     # Ensure that the shared variable exists.
-    dsm.create(data_path, default="")
+    create(data_path, default="")
     # Fetch the old value.
-    old_value = dsm.get(data_path)
+    old_value = get(data_path)
     # Append the argument.
     new_value = old_value + append_string
     # Save the new value to the datastore.
-    dsm.set(data_path, new_value)
+    set(data_path, new_value)
 
 
 if __name__ == "__main__":
@@ -50,11 +50,10 @@ if __name__ == "__main__":
     else:
         sys.exit("expected locality argument to be either all, remote, or local")
         config_string
-    config_path = os.path.join(os.path.dirname(__file__), "remote.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), config_name)
     num_of_servers = 3
 
-    zoobars = create_dsm()
-    init_master(config_path, zoobars)
+    init_master(config_path)
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)
@@ -74,13 +73,13 @@ if __name__ == "__main__":
         goaway(mathSqrt, i)
 
     ## Verify distributed shared memory works
-    goaway(grow_shared, zoobars, "mua")
-    goaway(grow_shared, zoobars, "ha")
-    goaway(grow_shared, zoobars, "haa")
+    goaway(grow_shared, "mua")
+    goaway(grow_shared, "ha")
+    goaway(grow_shared, "haa")
     time.sleep(3)
-    print zoobars.create("tweedle_dee_value_path", default="LAST")
+    print create("tweedle_dee_value_path", default="LAST")
     print "And now for the final result:"
-    print zoobars.get("tweedle_dee_value_path")
+    print get("tweedle_dee_value_path")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")

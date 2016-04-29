@@ -9,17 +9,18 @@ from datastore import DataStore
 ## User runs this function to start off system
 ## probably will read the config file for info
 ## on cluster config, and maybe imports
-def init_master(config_path, dsm):
+def init_master(config_path):
     """
     Initiliazes a master that runs locally.
     On startup that master wakes up its remote slaves
     And gives them a copy of the dsm object
     Args:
        config_path: string lists path of config file for slaves to use
-       dsm: DataStore object to be shared across machines
+       TODO: dsm: DataStore object to be shared across machines
     """
 
     print "starting master ..."
+    globalvars.dsm = DataStore()
     globalvars.rc = RemoteControl(config_path, "localhost")
     print "in init ref of rc %s" % (globalvars.rc.__hash__)
     serversAlive = globalvars.rc.check_servers()
@@ -47,10 +48,15 @@ def goaway(fn, *args, **kwargs):
     print "at least one server alive before goaway call? %s" % (globalvars.rc.check_servers())
     globalvars.rc.goaway(file_name, name, *args, **kwargs)
 
-def create_dsm():
+def create(path, default):
     """ Creates a shared memory object
     Returns:
        datastore object that is shared across machines
     """
-    dsm = DataStore()
-    return dsm
+    globalvars.dsm.create(path, default)
+
+def get(path):
+    return globalvars.dsm.get(path)
+
+def set(path, value):
+    globalvars.dsm.set(path, value)
