@@ -52,4 +52,5 @@ def create_dsm():
     Returns:
        datastore object that is shared across machines
     """
-    return DataStore()
+    dsm = DataStore()
+    return dsm
