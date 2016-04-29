@@ -1,39 +1,46 @@
 import sys
-print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
-run = raw_input("Continue [y/N]")
-if run != 'y':
-    sys.exit(0)
-import time
-
 import os
-import pickle
 sys.path.append(os.path.abspath(os.path.join("../goaway")))
-from goaway.remotecontrol import RemoteControl
-from goaway.datastore import DataStore
+from goaway import *
+import os
 
+def square(x):
+    return x*x
+def cube(x):
+    return x*x*x
+def sqrt(x):
+    return x*.5
+def add(a, b):
+    return a + b
+def addKey(a, b=0):
+    return a+b
+if __name__ == "__main__":
+    print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
+    run = raw_input("Continue [y/N]")
+    if run != 'y':
+        sys.exit(0)
+    config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    num_of_servers = 3
 
-config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
-print "Config path::", config_path
-rc = RemoteControl(config_path, "localhost")
-db = DataStore()
+    init_master(config_path)
 
-print "Server count", rc.server_count()
-
-def run_remote_verbose(server_id, function_name, *args):
-    print "-> Running {}({}) on server {}".format(function_name, args, server_id)
-    rc.run_on_server(server_id, function_name, *args)
-    print "<- Remote thread started"
-run_remote_verbose(0, "square", (2))
-run_remote_verbose(1, "cube", 2)
-run_remote_verbose(2, "sqrt", 2)
-for serverId in range(rc.server_count()):
-    run_remote_verbose(serverId, "square", serverId)
-
-run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
-run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
-run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
-
-time.sleep(3)
-print db.create("tweedle_dee_value_path", default="LAST")
-print "And now, for the final result:"
-print db.get("tweedle_dee_value_path")
+    goaway(square, 1)
+    goaway(cube, 2)
+    goaway(sqrt, 3)
+    ## Makes sure another function can run on another machine
+    for i in range(num_of_servers):
+        goaway(square, i)
+    for i in range(num_of_servers):
+        goaway(add, i, 1)
+        goaway(add, i, 2*i)
+    for i in range(num_of_servers):
+        goaway(addKey, i, b=0)
+        goaway(addKey, i, b=2*i)
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
+## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
+##
+## time.sleep(3)
+## print db.create("tweedle_dee_value_path", default="LAST")
+## print "And now, for the final result:"
+## print db.get("tweedle_dee_value_path")
