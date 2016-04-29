@@ -17,6 +17,23 @@ def addKey(a, b=0):
     return a+b
 def mathSqrt(x):
     return math.sqrt(x)
+def grow_shared(append_string):
+    """Grow a shared string.
+    Appends append_string to the shared string.
+    This is not an atomic operation and may lose append_string.
+    """
+    # The path or key is the address of the shared value.
+    data_path = "tweedle_dee_value_path"
+    # Ensure that the shared variable exists.
+    db.create(data_path, default="")
+    # Fetch the old value.
+    old_value = db.get(data_path)
+    # Append the argument.
+    new_value = old_value + append_string
+    # Save the new value to the datastore.
+    db.set(data_path, new_value)
+
+
 if __name__ == "__main__":
     print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
     run = raw_input("Continue [y/N]")
@@ -26,7 +43,7 @@ if __name__ == "__main__":
     num_of_servers = 3
 
     init_master(config_path)
-
+    db = DataStore()
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)
