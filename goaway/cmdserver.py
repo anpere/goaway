@@ -28,7 +28,7 @@ server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
 def hello():
-    return jsonify({"ok": "ok", "hello": "friend"})
+    return jsonify({"ok": "ok", "hello": "friend, 8"})
 
 
 @app.route("/check", methods=["GET"])
@@ -56,8 +56,8 @@ def kill_server():
 
 @app.route("/run", methods=["POST"])
 def run():
-    debug("run recieved")
     app.logger.warning("run recieved")
+    debug("run recieved")
     call = request.json
     print "run recieved"
 
@@ -66,8 +66,11 @@ def run():
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
     app.logger.warning("file:%s"%(function_path))
+    print "6 file path:%s" %( os.getcwd())
+    app.logger.warning("6 file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
     module_file, module_pathname, module_description = imp.find_module(module_name)
+    print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
     module = imp.load_module(module_name, module_file, module_pathname, module_description)
     '''
     todo: maybe not needed

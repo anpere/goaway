@@ -5,7 +5,6 @@ servers:
 filepaths:
   - $GOAWAYPATH/ ~/goaway
 ignorepaths:
-  - /todo /todo
   - /Users/anpere/Documents/Year15/sp/goaway/ home/ubuntu/goaway
 
 modules:

@@ -53,7 +53,7 @@ class RemoteControl(object):
             else:
                 print "Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path)
                 remoteHost = "%s@%s" % (user, host)
-                command = "cd ~/goaway; goaway/run.sh ; goaway/cmdserver.py %s" % (self.config_path)
+                command = "cd ~/goaway; goaway/run.sh ; DEBUG=true goaway/cmdserver.py %s" % (self.config_path)
                 # command  = "cd ~/goaway ; goaway/foo.sh"
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
                 sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
@@ -76,7 +76,8 @@ class RemoteControl(object):
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
             print "rsync -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
-            os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git", src_path, user + "@" + host, trg_path))
+            os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git server.log", src_path, user + "@" + host, trg_path))
+            print "done rysncing"
 
     def server_count(self):
         return len(self.server_addresses)
