@@ -12,6 +12,8 @@ def sqrt(x):
     return x*.5
 def add(a, b):
     return a + b
+def addKey(a, b=0):
+    return a+b
 if __name__ == "__main__":
     print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
     run = raw_input("Continue [y/N]")
@@ -31,7 +33,9 @@ if __name__ == "__main__":
     for i in range(num_of_servers):
         goaway(add, i, 1)
         goaway(add, i, 2*i)
-
+    for i in range(num_of_servers):
+        goaway(add, i, b=0)
+        goaway(add, i, b=2*i)
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
