@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join("../goaway")))
 from goaway import *
 import os
+import math
 
 def square(x):
     return x*x
@@ -14,6 +15,8 @@ def add(a, b):
     return a + b
 def addKey(a, b=0):
     return a+b
+def mathSqrt(x):
+    return math.sqrt(x)
 if __name__ == "__main__":
     print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
     run = raw_input("Continue [y/N]")
@@ -30,12 +33,17 @@ if __name__ == "__main__":
     ## Makes sure another function can run on another machine
     for i in range(num_of_servers):
         goaway(square, i)
+    ## Verify goaway can run a function that takes multiple arguments on another machine
     for i in range(num_of_servers):
         goaway(add, i, 1)
         goaway(add, i, 2*i)
+    ## Verify goaway can run a function that takes keyword arguments on another machine
     for i in range(num_of_servers):
-        goaway(addKey, i, b=0)
+        goaway(addKey, i)
         goaway(addKey, i, b=2*i)
+    ## Verify goaway can run a function that imports another library another machine
+    for i in range(num_of_servers):
+        goaway(mathSqrt, i)
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "haa")
