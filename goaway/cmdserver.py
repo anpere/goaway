@@ -40,7 +40,7 @@ def check():
 
 @app.route("/kill", methods=["POST"])
 def kill():
-    #TODO: implement kill_server()
+    app.logger.info("server killed")
     kill_server()
     return "killed server"
 

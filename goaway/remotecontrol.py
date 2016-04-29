@@ -29,12 +29,8 @@ class RemoteControl(object):
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
-        ## this line shows that as of now, remote servers never die
-        print "servers alive before started? ..."
-        serversAlive = self.check_servers()
-        print serversAlive
+        self.kill_servers()
         self._sync_servers()
-        print "servers alive after sync?: %s " % (self.check_servers())
         self._start_servers()
 
         serversAlive = self.check_servers()
@@ -102,9 +98,12 @@ class RemoteControl(object):
         print "killing all servers!"
         for user, host, port in self.server_addresses:
             self._kill_server(user, host, port)
+        return
 
     def _kill_server(self, user, host, port):
-        CmdClient(user, host, port).kill()
+        print "killing %s:%s" % (host, port)
+        result = CmdClient(user, host, port).kill()
+        return
 
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
