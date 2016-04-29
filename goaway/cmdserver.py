@@ -69,9 +69,13 @@ def run():
     print "6 file path:%s" %( os.getcwd())
     app.logger.warning("6 file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
-    module_file, module_pathname, module_description = imp.find_module(module_name)
-    print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
-    module = imp.load_module(module_name, module_file, module_pathname, module_description)
+    # module_file, module_pathname, module_description = imp.find_module(module_name)
+    # print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
+    s_file = open(function_path, 'U')
+    s_description = ('.py', 'U', 1)
+    print "Sketchy MF, MP, MD %s %s %s" % (s_file, function_path, s_description)
+    # module = imp.load_module(module_name, module_file, module_pathname, module_description)
+    module = imp.load_module(module_name, s_file, function_path, s_description)
     '''
     todo: maybe not needed
     if module_na not in getModules():

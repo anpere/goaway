@@ -26,7 +26,7 @@ if __name__ == "__main__":
     goaway(cube, 2)
     goaway(sqrt, 3)
     for i in range(num_of_servers):
-         goaway(square, 2)
+         goaway(square, i)
 
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
