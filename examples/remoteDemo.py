@@ -25,8 +25,12 @@ if __name__ == "__main__":
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)
+    ## Makes sure another function can run on another machine
     for i in range(num_of_servers):
-         goaway(square, i)
+        goaway(square, i)
+    for i in range(num_of_servers):
+        goaway(add, i, 1)
+        goaway(add, i, 2*i)
 
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "mua")
 ## run_remote_verbose(rc.random_server_id(), "grow_shared", "ha")
