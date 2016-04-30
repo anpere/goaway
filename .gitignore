@@ -1,2 +1,4 @@
 *.pyc
 examples/config.yaml
+server.log*
+server.debug
