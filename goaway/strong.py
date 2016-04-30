@@ -1,12 +1,11 @@
-from consistency import ConsistencyModel
-class Weak(ConsistencyModel):
+class Strong(ConsistencyModel):
     """
-    Represents shared memory with strong consistencies
+    Represents shared memory with weak consistencies
     On creation this data is shared with other machines
     Clients can set fields in this object and use them as
     they want.
     For example:
-        zoobar = Strong()
+        zoobar = Weak()
         zoobars.clients = {}
         zoobars.clients["alyssa"] = 10
 

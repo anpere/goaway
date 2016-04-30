@@ -5,6 +5,8 @@ import globalvars
 import signal
 from remotecontrol import RemoteControl
 from datastore import DataStore
+from weak import Weak
+from strong import Strong
 
 ## User runs this function to start off system
 ## probably will read the config file for info
