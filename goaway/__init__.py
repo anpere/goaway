@@ -47,16 +47,3 @@ def goaway(fn, *args, **kwargs):
     print "in goaway ref of rc %s" % (globalvars.rc.__hash__)
     print "at least one server alive before goaway call? %s" % (globalvars.rc.check_servers())
     globalvars.rc.goaway(file_name, name, *args, **kwargs)
-
-def create(path, default):
-    """ Creates a shared memory object
-    Returns:
-       datastore object that is shared across machines
-    """
-    globalvars.dsm.create(path, default)
-
-def get(path):
-    return globalvars.dsm.get(path)
-
-def set(path, value):
-    globalvars.dsm.set(path, value)
