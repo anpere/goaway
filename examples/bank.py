@@ -14,5 +14,8 @@ if __name__ == "__main__":
         database.clients[sender]-=amount
         database.clients[receiver]+=amount
 
+    ## bad bank
     transfer(zoobars, "alyssa", "ben", 10)
+
+    ## better bank
     transfer(foocoins, "alyssa", "ben", 10)

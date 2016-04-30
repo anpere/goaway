@@ -8,16 +8,22 @@ import time
 
 def square(x):
     return x*x
+
 def cube(x):
     return x*x*x
+
 def sqrt(x):
     return x*.5
+
 def add(a, b):
     return a + b
+
 def addKey(a, b=0):
     return a+b
+
 def mathSqrt(x):
     return math.sqrt(x)
+
 def grow_shared(append_string):
     """Grow a shared string.
     Appends append_string to the shared string.
@@ -33,7 +39,6 @@ def grow_shared(append_string):
     new_value = old_value + append_string
     # Save the new value to the datastore.
     set(data_path, new_value)
-
 
 if __name__ == "__main__":
     print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
