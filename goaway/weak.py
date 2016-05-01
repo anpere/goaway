@@ -1,5 +1,5 @@
-from datastore import DataStore
-class Weak(DataStore):
+from objecthandler import ObjectHandler
+class Weak(ObjectHandler):
     """
     Represents shared memory with strong consistencies
     On creation this data is shared with other machines
