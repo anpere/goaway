@@ -4,7 +4,6 @@ import time
 import globalvars
 import signal
 from remotecontrol import RemoteControl
-from datastore import DataStore
 from weak import Weak
 from strictcentralized import StrictCentralized
 

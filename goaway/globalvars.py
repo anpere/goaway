@@ -15,8 +15,10 @@ dsm = None
 # RC initialized by Goaway.__init__.
 
 rc = None
-strictHandler = None
+strictCentralizedDataStore = StrictDataStore()
+weakDataStore = WeakDataStore()
 
+## TODO AP: miles thinks this is sketchy, remove it eventually
 def sigint(a, b):
     ''' This runs when user kills the program.
         Original intention is to kill the remote servers
