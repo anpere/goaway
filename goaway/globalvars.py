@@ -15,8 +15,9 @@ dsm = None
 # RC initialized by Goaway.__init__.
 
 rc = None
-strictCentralizedDataStoreHandle = StrictDataStoreHandle()
-weakDataStoreHandle = WeakDataStoreHandle()
+# TODO these should be initialized somewhere not here.
+strictCentralizedDataStoreHandle = None
+weakDataStoreHandle = None
 
 ## TODO AP: miles thinks this is sketchy, remove it eventually
 ## TODO AP: miles also doesn't like the single quotes in ur docstring

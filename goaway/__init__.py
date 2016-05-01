@@ -4,8 +4,6 @@ import time
 import globalvars
 import signal
 from remotecontrol import RemoteControl
-from weak import Weak
-from strictcentralized import StrictCentralized
 
 ## User runs this function to start off system
 ## probably will read the config file for info
