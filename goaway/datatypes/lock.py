@@ -2,15 +2,16 @@
 import uuid, thread, globalvars
 
 class Lock(object):
-    def __init__(self):
-        self.uuid = uuid.uuid1()
-        self.d = StrictObjectHandle()
-        self.d.
+    def __init__(self, name):
+        self.uuid = uuid.uuid1() # Unique to the process (who is holding the lock)
+        self.name = name # All acquires happen on the same name
 
     def acquire(self):
         """ blocks """
+        data = {"uuid": self.uuid,
+                "name": self.name}
         while True:
-            resj = self._rpc("POST", self._master_url("lock/acquire"), {"uuid": self.uuid}))
+            resj = self._rpc("POST", self._master_url("lock/acquire"), data)
             if resj["ok"] == "true": #TODO sketchy string
                 return
 
@@ -20,4 +21,6 @@ class Lock(object):
 
     def _release_async(self):
         """ sends release notice """
-        resj
+        data = {"uuid": self.uuid,
+                "name": self.name}
+        resj = self._rpc("POST", self._master_url("lock/release"), data)
