@@ -15,5 +15,5 @@ class Weak(ConsistencyModel):
         pass
     def __setattr__(self, name, value):
         pass
-    def __getattr_(self, name):
+    def __getattr__(self, name):
         pass

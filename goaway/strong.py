@@ -14,6 +14,6 @@ class Strong(ConsistencyModel):
     def __init__(self):
         pass
     def __setattr__(self, name, value):
-        pass
-    def __getattr_(self, name):
-        pass
+        print "name:%s value%s"% (name, value)
+    def __getattr__(self, name):
+        print "name:%s "% (name)
