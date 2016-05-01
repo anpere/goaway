@@ -28,7 +28,7 @@ class ObjectHandle(object):
         """
         store = getattr(self, STORE_ATTR)
         object_name = getattr(self, NAME_ATTR)
-        object_value = store.get(name)
+        object_value = store.get(object_name)
         try:
             val = object_value[key]
         except KeyError:
