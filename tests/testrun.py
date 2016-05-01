@@ -1,7 +1,6 @@
 import unittest
 import time
 import sys, os
-sys.path.append(os.path.abspath(os.path.join("../goaway")))
 from goaway.remotecontrol import RemoteControl
 
 rc = RemoteControl(myaddress="localhost")
