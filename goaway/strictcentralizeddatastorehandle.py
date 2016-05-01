@@ -7,15 +7,19 @@ from datastorehandle import DataStoreHandle
 
 class StrictCentralizedDataStoreHandle(DataStoreHandle):
     """ Represents a DataStore.
+
         Ensures that accesses to the objects contained by this datastore
         satisfy the properties of strict consistency, that is:
-
+        It requires that if a [node] reads any [strictobject], the value
+        returned by the read operation is the value written by the most
+        recent write operation to that [strictobject].
+        https://en.wikipedia.org/wiki/Consistency_model#Strict_consistency
 
     """
     def __init__(self):
         pass
 
-    def create(self, path, default):
+    def create(self, name, default):
         """Ensure that a value exists in the datastore.
         Args:
             path: ID of data entry.
@@ -28,23 +32,22 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
         }
         resj = self._rpc("POST", self._master_url("data/create"), payload)
 
-    def get(self, objectName, key):
 
-    def get(self, path):
+    def get(self, name, key):
         """Get a value from the datastore."""
         payload = {
-            "consistency": "consistency",
+            "consistency": "strict",
             "path": path,
         }
         resj = self._rpc("GET", self._master_url("data/get"), payload)
         return resj["value"]
 
-    def set(self, path, value):
+    def set(self, name, key, value):
         """Set a value in the datastore.
         value must be json-encodable.
         """
         payload = {
-            "consistency": "consistency",
+            "consistency": "strict",
             "path": path,
             "value": value,
         }
