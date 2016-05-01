@@ -15,6 +15,8 @@ dsm = None
 # RC initialized by Goaway.__init__.
 
 rc = None
+strictHandler = None
+
 def sigint(a, b):
     ''' This runs when user kills the program.
         Original intention is to kill the remote servers
