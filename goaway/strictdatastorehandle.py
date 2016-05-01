@@ -5,7 +5,7 @@ from common import RpcException
 from datastorehandle import DataStoreHandle
 
 
-class StrictDataStore(DataStoreHandle):
+class StrictDataStoreHandle(DataStoreHandle):
     """A client to shared data storage.
     """
     def __init__(self):

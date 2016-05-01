@@ -2,10 +2,10 @@ import requests
 
 import globalvars
 from common import RpcException
-from datastorehandler import DataStoreHandler
+from datastorehandle import DataStoreHandle
 
 
-class StrictDataStore(DataStoreHandler):
+class StrictCentralizedDataStoreHandle(DataStoreHandle):
     """A client to shared data storage.
     """
     def __init__(self):

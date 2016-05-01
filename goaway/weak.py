@@ -1,5 +1,5 @@
 from objecthandler import ObjectHandler
-class Weak(ObjectHandler):
+class Weak(ObjectHandle):
     """
     Represents shared memory with strong consistencies
     On creation this data is shared with other machines
