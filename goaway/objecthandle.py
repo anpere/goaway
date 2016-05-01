@@ -42,4 +42,4 @@ class ObjectHandle(object):
         """
         store = getattr(self, STORE_ATTR)
         object_name = getattr(self, NAME_ATTR)
-        store.set(name, key, value)
+        store.set(object_name, key, value)
