@@ -1,3 +1,4 @@
+from consistency import ConsistencyModel
 class Strong(ConsistencyModel):
     """
     Represents shared memory with weak consistencies
