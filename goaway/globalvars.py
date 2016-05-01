@@ -1,5 +1,6 @@
 import signal
 import sys
+
 """
 Globals variables.
 

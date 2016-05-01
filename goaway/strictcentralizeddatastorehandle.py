@@ -17,38 +17,47 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
 
     """
     def __init__(self):
+        ## dictionary that store strict objects
         pass
 
     def create(self, name, default):
-        """Ensure that a value exists in the datastore.
+        """Creates a strict object in the datastore.
         Args:
-            path: ID of data entry.
-            default: Value to introduce _only_ if nothing existed there before.
+            name: name of object in datastore.
         """
         payload = {
             "consistency": "strict"
-            "path": path,
-            "default": default,
+            "name": name,
         }
         resj = self._rpc("POST", self._master_url("data/create"), payload)
 
 
-    def get(self, name, key):
-        """Get a value from the datastore."""
+    def get(self, name, field):
+        """Get a value from the datastore.
+        Args:
+           name: name of object in datastore.
+           field: field of the object in datastore
+        """
         payload = {
             "consistency": "strict",
-            "path": path,
+            "name": name,
+            "field": field
         }
         resj = self._rpc("GET", self._master_url("data/get"), payload)
         return resj["value"]
 
-    def set(self, name, key, value):
+    def set(self, name, field, value):
         """Set a value in the datastore.
         value must be json-encodable.
+        Args:
+           name: name of object in datastore
+           field: field of the object in datastore
+           value: value to set the field of object
         """
         payload = {
             "consistency": "strict",
-            "path": path,
+            "name": path,
+            "field": field,
             "value": value,
         }
         resj = self._rpc("POST", self._master_url("data/set"), payload)

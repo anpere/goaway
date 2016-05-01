@@ -18,6 +18,7 @@ from config import ClusterConfig ## AP: imported so that main can create a confi
 import yaml
 
 import globalvars ## AP: removed to temporarily fix problems with ^C
+import objectconstructors
 
 app = Flask(__name__)
 
@@ -65,8 +66,8 @@ def run():
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
     app.logger.warning("file:%s"%(function_path))
-    print "6 file path:%s" %( os.getcwd())
-    app.logger.warning("6 file path:%s"% (os.getcwd()))
+    print "file path:%s" %( os.getcwd())
+    app.logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
     # module_file, module_pathname, module_description = imp.find_module(module_name)
     # print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
@@ -94,12 +95,13 @@ def data_create():
     """
     Initialize shared data in this server's local store.
     """
-    path = request.json["path"]
-    default = request.json["default"]
+    consistency = request.json["consistency"]
+    name = request.json["name"]
 
-    with store_lock:
-        if path not in store:
-            store[path] = default
+    if consistency=="strict":
+        with store_lock:
+            if name not in store:
+                store[name] = objectconstructors.StrictCentralized(name)
 
     res = {"ok": "ok"}
     return jsonify(res)
@@ -110,17 +112,20 @@ def data_get():
     """
     Get shared data from this server's local store.
     """
-    path = request.json["path"]
+    consistency = request.json["consistency"]
+    name = request.json["name"]
+    field = request.json["field"]
 
-    with store_lock:
-        if path in store:
-            res = {
-                "value": store[path],
-            }
-        else:
-            res = {
-                "error": "NO_VAL_FOR_KEY",
-            }
+    if consistency=="strict":
+        with store_lock:
+            if name in store:
+                res = {
+                    "value": store[name].field,
+                }
+            else:
+                res = {
+                    "error": "NO_VAL_FOR_KEY",
+                }
 
     return jsonify(res)
 
@@ -130,11 +135,14 @@ def data_set():
     """
     Mutate shared data in this server's local store.
     """
-    path = request.json["path"]
+    consistency = request.json["consistency"]
+    name = request.json["name"]
+    field = request.json["field"]
     value = request.json["value"]
 
-    with store_lock:
-        store[path] = value
+    if consistency=="strict":
+        with store_lock:
+            store[name].field = value
 
     res = {"ok": "ok"}
     return jsonify(res)
