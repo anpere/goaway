@@ -14,9 +14,9 @@ class ObjectHandleTest(unittest.TestCase):
         self.store = mock.MagicMock()
         self.obj = ObjectHandle(self.store, self.name)
 
-    # def testBadKey(self):
-    #     self.store.get.return_value = 4
-    #     self.obj.x
+    def testBadKey(self):
+        self.store.get.return_value = {"x": 4}
+        self.assertEqual(self.obj.x, 4)
 
     def testSet(self):
         self.obj.x = 4
