@@ -6,7 +6,11 @@ from datastorehandle import DataStoreHandle
 
 
 class StrictCentralizedDataStoreHandle(DataStoreHandle):
-    """A client to shared data storage.
+    """ Represents a DataStore.
+        Ensures that accesses to the objects contained by this datastore
+        satisfy the properties of strict consistency, that is:
+
+
     """
     def __init__(self):
         pass
@@ -18,14 +22,18 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
             default: Value to introduce _only_ if nothing existed there before.
         """
         payload = {
+            "consistency": "strict"
             "path": path,
             "default": default,
         }
         resj = self._rpc("POST", self._master_url("data/create"), payload)
 
+    def get(self, objectName, key):
+
     def get(self, path):
         """Get a value from the datastore."""
         payload = {
+            "consistency": "consistency",
             "path": path,
         }
         resj = self._rpc("GET", self._master_url("data/get"), payload)
@@ -36,6 +44,7 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
         value must be json-encodable.
         """
         payload = {
+            "consistency": "consistency",
             "path": path,
             "value": value,
         }

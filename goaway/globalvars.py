@@ -15,8 +15,8 @@ dsm = None
 # RC initialized by Goaway.__init__.
 
 rc = None
-strictCentralizedDataStore = StrictDataStore()
-weakDataStore = WeakDataStore()
+strictCentralizedDataStoreHandle = StrictDataStoreHandle()
+weakDataStoreHandle = WeakDataStoreHandle()
 
 ## TODO AP: miles thinks this is sketchy, remove it eventually
 def sigint(a, b):
