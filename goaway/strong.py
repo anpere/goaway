@@ -1,4 +1,4 @@
-from consistency import ConsistencyModel
+from datastore import DataStore
 class Strong(DataStore):
     """
     Represents shared memory with weak consistencies
