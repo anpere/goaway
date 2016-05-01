@@ -22,7 +22,10 @@ class Observer(object):
 
     def __getattr__(self, name):
         store = getattr(self, "__store")
-        value = store.get(name)
+        try:
+            value = store.get(name)
+        except KeyError:
+            raise AttributeError("Object has no such attribute '{}'".format(name))
         print "get({}) -> {}".format(name, value)
         return value
 
@@ -43,3 +46,4 @@ print o.x + " not"
 print o.x * 5
 o.x *= 3
 print o.x
+# print o.z
