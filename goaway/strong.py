@@ -1,5 +1,5 @@
 from consistency import ConsistencyModel
-class Strong(ConsistencyModel):
+class Strong(DataStore):
     """
     Represents shared memory with weak consistencies
     On creation this data is shared with other machines
