@@ -1,5 +1,7 @@
 """ a goaway lock """
-import uuid, thread, globalvars
+import uuid
+import thread
+import goaway.globalvars as globalvars
 
 class Lock(object):
     def __init__(self, name):
