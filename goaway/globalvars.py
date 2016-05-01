@@ -13,7 +13,7 @@ config = None
 dsm = None
 
 # RC initialized by Goaway.__init__.
-print "rc set to None!!!"
+
 rc = None
 def sigint(a, b):
     ''' This runs when user kills the program.

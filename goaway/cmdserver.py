@@ -23,7 +23,6 @@ app = Flask(__name__)
 
 store = {}
 store_lock = threading.RLock()
-print "this runs all the time"
 server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
