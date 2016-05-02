@@ -19,6 +19,8 @@ if __name__ == "__main__":
     init_master(config_path)
     ## TODO: ask Jess if this is correct
     zoobars = StrictCentralized("zoobars")
+    clients = GoawayDict()
+    clients["hello"] = 1
     zoobars.clients = GoawayDict()
     zoobars.value = 1
 

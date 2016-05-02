@@ -7,6 +7,7 @@ from remotecontrol import RemoteControl
 from objectconstructors import *
 from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
 from weakdatastorehandle import WeakDataStoreHandle
+from goawaydict import GoawayDict
 
 ## User runs this function to start off system
 ## probably will read the config file for info
