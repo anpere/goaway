@@ -5,6 +5,7 @@ from goaway import *
 import os
 
 if __name__ == "__main__":
-   weak = StrictCentralized()
-   weak.clients = {}
-   weak.value = 1
+    ## TODO: ask Jess if this is correct
+   zoobars = StrictCentralized("zoobars")
+   zoobars.clients = {}
+   zoobars.value = 1

@@ -3,5 +3,4 @@ from globalvars import strictCentralizedDataStoreHandle
 
 class StrictCentralized(ObjectHandle):
     def __init__(self, name):
-        ObjectHandler.__init__(self, strictCentralizedDataStoreHandle, name)
-
+        ObjectHandle.__init__(self, strictCentralizedDataStoreHandle, name)

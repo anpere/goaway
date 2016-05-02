@@ -4,6 +4,7 @@ import time
 import globalvars
 import signal
 from remotecontrol import RemoteControl
+from objectconstructors import *
 
 ## User runs this function to start off system
 ## probably will read the config file for info
