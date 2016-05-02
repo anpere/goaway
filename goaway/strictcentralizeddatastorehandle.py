@@ -57,7 +57,7 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
         """
         payload = {
             "consistency": "strict",
-            "name": path,
+            "name": name,
             "field": field,
             "value": value,
         }
@@ -89,7 +89,8 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
             raise RpcException("RPC server returned code {}".format(res.status_code))
         resj = res.json()
         if "error" in resj:
-            raise RpcException(resj["error"])
+            if resj["error"] != "ok":
+                raise RpcException(resj["error"])
         return resj
 
     def _master_url(self, url_subpath):

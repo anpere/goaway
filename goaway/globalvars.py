@@ -26,9 +26,5 @@ def sigint(a, b):
 
     print "Why you trying to globally kill me?"
     print "ref of rc in globalvars %s" % (rc.__hash__)
-    beforeKill = rc.check_servers()
-    print "Servers Alive before kill?:%s" % (beforeKill)
     rc.kill_servers()
-    afterKill = rc.check_servers()
-    print "Servers Alive after kill?:%s" % (afterKill)
     sys.exit(0)

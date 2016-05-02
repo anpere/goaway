@@ -112,20 +112,29 @@ def data_get():
     """
     Get shared data from this server's local store.
     """
+    print "get. request:%s" % (request.json)
+    print "datastore: %s" % (store)
     consistency = request.json["consistency"]
     name = request.json["name"]
     field = request.json["field"]
-
+    value = "NONE"
+    error = "ok"
     if consistency=="strict":
         with store_lock:
             if name in store:
-                res = {
-                    "value": store[name].field,
-                }
+                try:
+                    print "getting value of %s.%s" % (name, field)
+                    value = store[name][field]
+                    print "got value of %s.%s" % (name, field)
+                except KeyError:
+                    print "Key error for name: %s , field: %s" % (name, field)
+                    error = "Object<{}> has no such attribute '{}'".format(object_name, key)
             else:
-                res = {
-                    "error": "NO_VAL_FOR_KEY",
-                }
+                    error = "NO_VAL_FOR_KEY"
+
+    res = { "value" : value,
+          "error" : error,
+          }
 
     return jsonify(res)
 
@@ -135,6 +144,7 @@ def data_set():
     """
     Mutate shared data in this server's local store.
     """
+    print "payload:%s" % (request.json)
     consistency = request.json["consistency"]
     name = request.json["name"]
     field = request.json["field"]
@@ -142,7 +152,13 @@ def data_set():
 
     if consistency=="strict":
         with store_lock:
-            store[name].field = value
+            if name not in store:
+                print "%s not in store" % (name)
+                store[name] = {}
+                print "put %s in store" % (name)
+            print "setting %s.%s to %s" % (name, field, value)
+            store[name][field] = value
+            print "set %s.%s to %s" % (name, field, value)
 
     res = {"ok": "ok"}
     return jsonify(res)

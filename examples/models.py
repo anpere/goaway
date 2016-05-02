@@ -21,3 +21,9 @@ if __name__ == "__main__":
     zoobars = StrictCentralized("zoobars")
     zoobars.clients = {}
     zoobars.value = 1
+    alias = zoobars.clients
+    alias[0] = 0
+    zoobars.clients = alias
+
+    # zoobars.clients["alyssa"] = 0
+    zoobars.clients["ben"] = 1

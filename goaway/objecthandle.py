@@ -27,20 +27,16 @@ class ObjectHandle(object):
         """
         Hook when an attribute is fetched.
         """
+        print "field %s" % (field)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
-        object_value = store.get(object_name)
-        try:
-            val = object_value[field]
-        except KeyError:
-            raise AttributeError("Object<{}> has no such attribute '{}'"
-                                 .format(object_name, key))
-        return val
+        return  store.get(object_name, field)
 
     def __setattr__(self, field, value):
         """
         Hook when an attribute is set.
         """
+        print "field %s, value %s" % (field, value)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
         store.set(object_name, field, value)
