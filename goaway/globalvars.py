@@ -21,11 +21,10 @@ strictCentralizedDataStoreHandle = None
 weakDataStoreHandle = None
 
 ## TODO AP: miles thinks this is sketchy, remove it eventually
-## TODO AP: miles also doesn't like the single quotes in ur docstring
 def sigint(a, b):
-    ''' This runs when user kills the program.
+    """ This runs when user kills the program.
         Original intention is to kill the remote servers
-        When the user is finished using goaway '''
+        When the user is finished using goaway """
 
     print "Why you trying to globally kill me?"
     print "ref of rc in globalvars %s" % (rc.__hash__)
