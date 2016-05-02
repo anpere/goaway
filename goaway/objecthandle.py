@@ -27,16 +27,26 @@ class ObjectHandle(object):
         """
         Hook when an attribute is fetched.
         """
-        print "field %s" % (field)
+        print "getting field %s" % (field)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
-        return  store.get(object_name, field)
+        ## Field is not used in get intentionally
+        ## zoobars.clients["a"] = 0
+        ## money = zoobars.clients["a"]
+        ## getattr has to return a dictionary so it can be keyed by "a"
+        stored_object= store.get(object_name)
+        try:
+            val = stored_object[field]
+        except KeyError:
+            raise AttributeError("Object<{}> has no such attribute '{}'"
+                                 .format(object_name, field))
+        return val
 
     def __setattr__(self, field, value):
         """
         Hook when an attribute is set.
         """
-        print "field %s, value %s" % (field, value)
+        print "setting field %s, value %s" % (field, value)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
         store.set(object_name, field, value)

@@ -19,11 +19,14 @@ if __name__ == "__main__":
     init_master(config_path)
     ## TODO: ask Jess if this is correct
     zoobars = StrictCentralized("zoobars")
-    zoobars.clients = {}
+    zoobars.clients = GoawayDict()
     zoobars.value = 1
-    alias = zoobars.clients
-    alias[0] = 0
-    zoobars.clients = alias
 
-    # zoobars.clients["alyssa"] = 0
+    print "setting"
+    zoobars.clients["alyssa"] = 0
     zoobars.clients["ben"] = 1
+    zoobars.value +=1
+
+    print "getting"
+    assert zoobars.clients["alyssa"] == 0
+    assert zoobars.clients["ben"] == 1

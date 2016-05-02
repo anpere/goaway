@@ -124,7 +124,7 @@ def data_get():
             if name in store:
                 try:
                     print "getting value of %s.%s" % (name, field)
-                    value = store[name][field]
+                    value = store[name]
                     print "got value of %s.%s" % (name, field)
                 except KeyError:
                     print "Key error for name: %s , field: %s" % (name, field)
