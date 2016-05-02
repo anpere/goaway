@@ -11,12 +11,10 @@ to get access to information that the goaway server has put here.
 # Initialized by cmdserver.start_server.
 # Initialized by RemoteControl.__init__.
 config = None
-dsm = None
 
 # RC initialized by Goaway.__init__.
 
 rc = None
-# TODO these should be initialized somewhere not here.
 strictCentralizedDataStoreHandle = None
 weakDataStoreHandle = None
 

@@ -19,7 +19,8 @@ def init_master(config_path):
     """
 
     print "starting master ..."
-    globalvars.dsm = DataStore()
+    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandleDataStore()
+    globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path, "localhost")
     print "in init ref of rc %s" % (globalvars.rc.__hash__)
     serversAlive = globalvars.rc.check_servers()
