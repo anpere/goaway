@@ -18,6 +18,7 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
     """
     def __init__(self):
         ## dictionary that store strict objects
+
         pass
 
     def create(self, name, default):
@@ -26,7 +27,7 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
             name: name of object in datastore.
         """
         payload = {
-            "consistency": "strict"
+            "consistency": "strict",
             "name": name,
         }
         resj = self._rpc("POST", self._master_url("data/create"), payload)

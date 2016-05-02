@@ -1,6 +1,7 @@
 from objecthandle import ObjectHandle
-from globalvars import strictCentralizedDataStoreHandle
+import globalvars
 
 class StrictCentralized(ObjectHandle):
     def __init__(self, name):
-        ObjectHandle.__init__(self, strictCentralizedDataStoreHandle, name)
+        print "in objconstructor:%s" % (globalvars.strictCentralizedDataStoreHandle.__hash__)
+        ObjectHandle.__init__(self, globalvars.strictCentralizedDataStoreHandle, name)

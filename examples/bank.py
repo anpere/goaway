@@ -8,7 +8,7 @@ import time
 if __name__ == "__main__":
     zoobars = Weak()
     zoobars.clients = {}
-    foocoins = Strong()
+    foocoins = StrongCentralized()
     foocoins.clients = {}
     def transfer(database, sender, receiver, amount):
         database.clients[sender]-=amount

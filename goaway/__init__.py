@@ -5,6 +5,8 @@ import globalvars
 import signal
 from remotecontrol import RemoteControl
 from objectconstructors import *
+from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
+from weakdatastorehandle import WeakDataStoreHandle
 
 ## User runs this function to start off system
 ## probably will read the config file for info
@@ -20,7 +22,8 @@ def init_master(config_path):
     """
 
     print "starting master ..."
-    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandleDataStore()
+    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
+    print "in init strictCDSH %s" % (globalvars.strictCentralizedDataStoreHandle)
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path, "localhost")
     print "in init ref of rc %s" % (globalvars.rc.__hash__)
