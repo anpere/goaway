@@ -3,14 +3,10 @@ sys.path.append(os.path.abspath(os.path.join("../goaway")))
 import goaway
 from time import sleep
 
-l = goaway.Lock("l")
 s = goaway.StrictCentralized("s")
 
-def increment_and_copy():
-    l.acquire()
+def increment():
     s.num += 1
-    s.num2 = s.num
-    l.release()
 
 if __name__ == "__main__":
     place  = sys.argv[1]
@@ -28,13 +24,10 @@ if __name__ == "__main__":
     s.num = 0
 
     for i in range(10):
-        goaway.goaway(increment_and_copy)
+        goaway.goaway(increment)
 
-    #while s.num < 10:
-    #    pass #wait
-    sleep(10)
+    while s.num < 10:
+        pass #wait
 
     r1 = s.num
-    r2 = s.num2
-    print "RESULT1", r1
-    print "RESULT2", r2
+    print "RESULT", r1
