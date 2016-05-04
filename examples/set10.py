@@ -9,7 +9,10 @@ def increment():
     s.num += 1
 
 if __name__ == "__main__":
-    place  = sys.argv[1]
+    if len(sys.argv) != 2:
+        print "Usage: set10.py <place>"
+        sys.exit(1)
+    place = sys.argv[1]
     if place=="remote":
         config_name = "remote.yaml"
     elif place=="local":
