@@ -24,22 +24,14 @@ def addKey(a, b=0):
 def mathSqrt(x):
     return math.sqrt(x)
 
+stringStrict = StrictCentralized("stringStrict")
+
 def grow_shared(append_string):
     """Grow a shared string.
     Appends append_string to the shared string.
     This is not an atomic operation and may lose append_string.
     """
-    ## TODO: make a similar test but with our recent specification
-    ## The path or key is the address of the shared value.
-    ##  data_path = "tweedle_dee_value_path"
-    ## Ensure that the shared variable exists.
-    ##create(data_path, default="")
-    # Fetch the old value.
-    ##old_value = get(data_path)
-    # Append the argument.
-    ##new_value = old_value + append_string
-    # Save the new value to the datastore.
-    ## set(data_path, new_value)
+    stringStrict.value += stringStrict
 
 if __name__ == "__main__":
     if os.environ.get("GOAWAYPATH") == None:
@@ -62,6 +54,7 @@ if __name__ == "__main__":
     num_of_servers = 6
 
     init(config_path)
+    ## Verifies goaway can run some straightforward functions
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)
@@ -81,10 +74,10 @@ if __name__ == "__main__":
         goaway(mathSqrt, i)
 
     ## Verify distributed shared memory works
+    stringStrict.value = ""
     goaway(grow_shared, "mua")
     goaway(grow_shared, "ha")
     goaway(grow_shared, "haa")
     time.sleep(3)
-    ## print create("tweedle_dee_value_path", default="LAST")
     print "And now for the final result:"
-    ## print get("tweedle_dee_value_path")
+    print stringStrict.value
