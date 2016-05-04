@@ -31,7 +31,7 @@ def grow_shared(append_string):
     Appends append_string to the shared string.
     This is not an atomic operation and may lose append_string.
     """
-    stringStrict.value += stringStrict
+    stringStrict.value += append_string
 
 if __name__ == "__main__":
     if os.environ.get("GOAWAYPATH") == None:
