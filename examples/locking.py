@@ -1,7 +1,9 @@
+import sys, os
+sys.path.append(os.path.abspath(os.path.join("../goaway")))
 import goaway
 
 l = goaway.Lock("l")
-s = goaway.Strict("s")
+s = goaway.StrictCentralized("s")
 
 def increment_and_copy():
     l.acquire()

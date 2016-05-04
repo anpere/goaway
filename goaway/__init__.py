@@ -8,6 +8,7 @@ from objectconstructors import *
 from weakdatastorehandle import WeakDataStoreHandle
 from goawaydict import GoawayDict
 import logging
+from datatypes import *
 
 # Silence requests logging.
 logging.getLogger("requests").setLevel(logging.WARNING)
