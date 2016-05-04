@@ -23,7 +23,9 @@ import objectconstructors
 app = Flask(__name__)
 
 store = {}
+locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 store_lock = threading.RLock()
+locks_lock = threading.RLock() # hee hee hee
 server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
@@ -163,6 +165,32 @@ def data_set():
     res = {"ok": "ok"}
     return jsonify(res)
 
+@app.route("/lock/acquire", methods=["POST"])
+def acquire_lock():
+    """ Attempt to acquire a shared lock. """
+    requester_uuid = request.json['uuid']
+    lock_name = request.json['name']
+    with locks_lock:
+        if lock_name in locks:
+            if locks[lock_name] != None: # not reentrant
+                res = {"ok": "false"}
+                return jsonify(res)
+        locks[lock_name] = requester_uuid
+    res = {"ok": "ok"}
+    return jsonify(res)
+
+@app.route("/lock/release", methods=["POST"])
+def release_lock():
+    """ Release a shared lock, if you are holding it. """
+    requester_uuid = request.json['uuid']
+    lock_name = request.json['name']
+    with locks_lock:
+        if lock_name in locks and locks[lock_name] == requester_uuid:
+            locks[lock_name] = None
+            res = {"ok": "ok"}
+            return jsonify(res)
+    res = {"ok": "false"}
+    return jsonify(res)
 
 def _run_in_thread(function, *args, **kwargs):
     # Simulate a slow execution.
