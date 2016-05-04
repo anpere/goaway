@@ -219,15 +219,26 @@ def start_server(port, config):
         imp.load_source(module_name, module_path)
     '''
     try:
-        # Always disable auto-reloader.
-        # It is dangerous when running as a subprocess.
-        handler = RotatingFileHandler('server.log', maxBytes=10000, backupCount=1)
+        # Set up logging to only go to files.
+        logfile = "server.log"
+        handler = RotatingFileHandler(logfile, maxBytes=10000, backupCount=1)
         formatter = logging.Formatter(
             "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
-        handler.setLevel(logging.INFO)
+        handler.setLevel(logging.DEBUG)
         handler.setFormatter(formatter)
+
+        app.logger.handlers = []
         app.logger.addHandler(handler)
+        werkzeug_logger = logging.getLogger("werkzeug")
+        werkzeug_logger.handlers = []
+        werkzeug_logger.addHandler(handler)
+        # The werkzeug logger somehow still outputs to stdout, so this silences it.
+        werkzeug_logger.setLevel(logging.ERROR)
+
         app.logger.warning("running app")
+
+        # Always disable auto-reloader.
+        # It is dangerous when running as a subprocess.
         app.run(host="0.0.0.0", port=port,
                 debug=debugOn, use_reloader=False)
     except socket.error as exc:

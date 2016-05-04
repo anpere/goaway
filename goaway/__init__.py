@@ -8,6 +8,10 @@ from objectconstructors import *
 from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
 from weakdatastorehandle import WeakDataStoreHandle
 from goawaydict import GoawayDict
+import logging
+
+# Silence requests logging.
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 ## User runs this function to start off system
 ## probably will read the config file for info

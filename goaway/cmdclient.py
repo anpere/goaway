@@ -20,10 +20,12 @@ class CmdClient(object):
         try:
             res = requests.get(self._url("check"))
             resj = res.json()
-            print resj
             return resj["ok"]=="ok"
-        except Exception as ex:
+        except requests.exceptions.ConnectionError:
             return False
+        except Exception as ex:
+            # Actually, what kind of exceptions appear here?
+            raise ex
         if res.status_code != 200:
             return False
 
