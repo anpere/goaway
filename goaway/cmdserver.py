@@ -18,6 +18,7 @@ from config import ClusterConfig ## AP: imported so that main can create a confi
 import yaml
 
 import globalvars ## AP: removed to temporarily fix problems with ^C
+from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
 import objectconstructors
 
 app = Flask(__name__)

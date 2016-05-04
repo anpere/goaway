@@ -34,13 +34,11 @@ class ObjectHandle(object):
         ## zoobars.clients["a"] = 0
         ## money = zoobars.clients["a"]
         ## getattr has to return a dictionary so it can be keyed by "a"
-        stored_object= store.get(object_name)
-        try:
-            val = stored_object[field]
-        except KeyError:
-            raise AttributeError("Object<{}> has no such attribute '{}'"
-                                 .format(object_name, field))
-        return val
+
+        ## The cmdserver can return various types of data.
+        ## The cmdserver can return an integer, or it can return a dictionary
+        object_data = store.get(object_name, field)
+        return object_data
 
     def __setattr__(self, field, value):
         """
