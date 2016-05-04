@@ -1,6 +1,9 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 DATA_STORE_HANDLE_ATTR = "__store"
 NAME_ATTR = "__name"
-
 
 class ObjectHandle(object):
     """
@@ -19,7 +22,7 @@ class ObjectHandle(object):
             store: The DataStoreHandle to use to manage state.
             name: The unique identifier of the object.
         """
-        print "datastore object:%s" % (dataStoreHandle.__hash__)
+        logger.debug("datastore object:%s" % (dataStoreHandle.__hash__))
         self.__dict__[DATA_STORE_HANDLE_ATTR] = dataStoreHandle
         self.__dict__[NAME_ATTR] = name
 

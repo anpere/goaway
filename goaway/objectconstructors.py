@@ -1,10 +1,13 @@
 from objecthandle import ObjectHandle
 from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
 import globalvars
+import logging
+
+logger = logging.getLogger(__name__)
 
 class StrictCentralized(ObjectHandle):
     def __init__(self, name):
-        print "in objconstructor:%s" % (globalvars.strictCentralizedDataStoreHandle.__hash__)
+        logger.debug("in objconstructor:%s" % (globalvars.strictCentralizedDataStoreHandle.__hash__))
         self.create_datastore()
         ObjectHandle.__init__(self, globalvars.strictCentralizedDataStoreHandle, name)
     def create_datastore(self):
