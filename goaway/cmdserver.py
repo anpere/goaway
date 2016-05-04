@@ -37,7 +37,7 @@ def hello():
 @app.route("/check", methods=["GET"])
 def check():
     app.logger.info("server was checked on")
-    debug("server was checked on")
+    app.logger.debug("server was checked on")
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
@@ -48,7 +48,6 @@ def kill():
     return "killed server"
 
 def kill_server():
-    print "killed!!"
     func = request.environ.get('werkzeug.server.shutdown')
     ok = "killed"
     if func is None:
@@ -60,23 +59,21 @@ def kill_server():
 @app.route("/run", methods=["POST"])
 def run():
     app.logger.warning("run recieved")
-    debug("run recieved")
+    app.logger.debug("run recieved")
     call = request.json
-    print "run recieved"
 
     function_name = call["function_name"]
     function_args = call["args"]
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
     app.logger.warning("file:%s"%(function_path))
-    print "file path:%s" %( os.getcwd())
     app.logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
     # module_file, module_pathname, module_description = imp.find_module(module_name)
     # print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
     s_file = open(function_path, 'U')
     s_description = ('.py', 'U', 1)
-    print "Sketchy MF, MP, MD %s %s %s" % (s_file, function_path, s_description)
+    # print "Sketchy MF, MP, MD %s %s %s" % (s_file, function_path, s_description)
     # module = imp.load_module(module_name, module_file, module_pathname, module_description)
     module = imp.load_module(module_name, s_file, function_path, s_description)
     '''
@@ -115,8 +112,6 @@ def data_get():
     """
     Get shared data from this server's local store.
     """
-    print "get. request:%s" % (request.json)
-    print "datastore: %s" % (store)
     consistency = request.json["consistency"]
     name = request.json["name"]
     field = request.json["field"]
@@ -126,11 +121,9 @@ def data_get():
         with store_lock:
             if name in store:
                 try:
-                    print "getting value of %s.%s" % (name, field)
                     value = store[name]
-                    print "got value of %s.%s" % (name, field)
                 except KeyError:
-                    print "Key error for name: %s , field: %s" % (name, field)
+                    app.logger.warning("Key error for name: %s , field: %s" % (name, field))
                     error = "Object<{}> has no such attribute '{}'".format(object_name, key)
             else:
                     error = "NO_VAL_FOR_KEY"
@@ -147,7 +140,6 @@ def data_set():
     """
     Mutate shared data in this server's local store.
     """
-    print "payload:%s" % (request.json)
     consistency = request.json["consistency"]
     name = request.json["name"]
     field = request.json["field"]
@@ -156,12 +148,10 @@ def data_set():
     if consistency=="strict":
         with store_lock:
             if name not in store:
-                print "%s not in store" % (name)
+                app.logger.warning("%s not in store, putting" % (name))
                 store[name] = {}
-                print "put %s in store" % (name)
-            print "setting %s.%s to %s" % (name, field, value)
+            app.logger.info("setting %s.%s to %s" % (name, field, value))
             store[name][field] = value
-            print "set %s.%s to %s" % (name, field, value)
 
     res = {"ok": "ok"}
     return jsonify(res)
@@ -199,7 +189,7 @@ def _run_in_thread(function, *args, **kwargs):
     ## time.sleep(2)
     ## AP: had to get rid of time.sleep(2) because it wasn't working with it
     result = function(*args, **kwargs)
-    print "Server result {}".format(result)
+    app.logger.info("Server result {}".format(result))
 
 
 def start_server(port, config):
@@ -210,8 +200,8 @@ def start_server(port, config):
     """
     globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
     debugOn = os.environ.get("DEBUG", False) == "true"
-    print "Server debug", "on" if debugOn else "off"
-    debug("starting server")
+    app.logger.info("Server debug %s", "on" if debugOn else "off")
+    app.logger.debug("starting server")
     ''' TODO
     for module in config.data["modules"]:
         module_name, module_path = module.split(" ")
@@ -262,13 +252,9 @@ def getModules():
         if isInstance(val, types.ModuleType):
             modules.append(val.__name__)
 
-def debug(message):
-    server_debug.write(message+"\n")
-    server_debug.flush()
-
 if __name__ == "__main__":
     print "HELLO"
-    debug("main is running")
+    app.logger.debug("main is running")
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
     print "Configpath :%s" % (config_path)

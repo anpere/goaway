@@ -32,16 +32,13 @@ class CmdClient(object):
     def kill(self):
         """Kills the mentioned server
         """
-        print "posting:%s"%(self._url("kill"))
         try:
             res = requests.post(self._url("kill"))
-            print "made kill"
             return True
         except Exception as ex:
             print ex
             return False
         if res.status_code != 200:
-            print "not 200"
             return False
 
     def run_remote(self, file_name, function_name, *args, **kwargs):
@@ -51,7 +48,6 @@ class CmdClient(object):
             "kwargs" : kwargs,
             "function_file": file_name
         }
-        print payload
         try:
             res = requests.post(self._url("run"), json=payload)
         except Exception as ex:

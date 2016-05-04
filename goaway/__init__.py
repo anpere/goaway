@@ -3,12 +3,19 @@ import random
 import time
 import globalvars
 import signal
+import sys
+import logging
+
+import logsetup
+logsetup.setup()
+
 from remotecontrol import RemoteControl
 from objectconstructors import *
 from weakdatastorehandle import WeakDataStoreHandle
 from goawaydict import GoawayDict
-import logging
 from datatypes import *
+
+logger = logging.getLogger(__name__)
 
 # Silence requests logging.
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -25,15 +32,13 @@ def init(config_path):
        config_path: string lists path of config file for slaves to use
        TODO: dsm: DataStore object to be shared across machines
     """
-
-    print "starting master ..."
-    print "in init strictCDSH %s" % (globalvars.strictCentralizedDataStoreHandle)
+    logger.info("starting master ...")
     ##TODO AP: initialize in a weak objecthandle contsructor
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path, "localhost")
-    print "in init ref of rc %s" % (globalvars.rc.__hash__)
+    logger.debug("in init ref of rc %s" % (globalvars.rc.__hash__))
     serversAlive = globalvars.rc.check_servers()
-    print "started master. serversAlive? %s" % (serversAlive)
+    logger.debug("started master. serversAlive? %s" % (serversAlive))
     ## Sets the hook for interrupts. This needs to happen after forking.
     ## If it happens before, every command server will execute the ctrl-c hook
     signal.signal(signal.SIGINT, globalvars.sigint)

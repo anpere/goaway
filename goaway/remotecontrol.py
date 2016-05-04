@@ -5,6 +5,7 @@ import subprocess
 import time
 import yaml
 import signal
+import logging
 
 import cmdserver
 from cmdclient import CmdClient
@@ -12,6 +13,8 @@ from config import ClusterConfig
 import globalvars
 import threading
 import pickle
+
+logger = logging.getLogger(__name__)
 
 max_tries = 3
 
@@ -34,13 +37,13 @@ class RemoteControl(object):
         self._start_servers()
 
         serversAlive = self.check_servers()
-        print "servers alive after started? %s" % (serversAlive)
+        logger.debug("servers alive after started? %s" % (serversAlive))
 
     def _start_servers(self):
         """Start any servers which are local."""
         for user, host, port in self.server_addresses:
             if host == self.myaddress:
-                print "Starting local server", host, port
+                logger.info("Starting local server %s %s", host, port)
                 proc = multiprocessing.Process(
                     target=lambda: cmdserver.start_server(port=port, config=self._config))
                 # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
@@ -95,13 +98,13 @@ class RemoteControl(object):
         return False
 
     def kill_servers(self):
-        print "killing all servers!"
+        logger.info("killing all servers")
         for user, host, port in self.server_addresses:
             self._kill_server(user, host, port)
         return
 
     def _kill_server(self, user, host, port):
-        print "killing %s:%s" % (host, port)
+        logger.info("killing %s:%s" % (host, port))
         result = CmdClient(user, host, port).kill()
         return
 
