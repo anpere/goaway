@@ -59,9 +59,9 @@ if __name__ == "__main__":
         sys.exit("expected locality argument to be either all, remote, or local")
         config_string
     config_path = os.path.join(os.path.dirname(__file__), config_name)
-    num_of_servers = 3
+    num_of_servers = 6
 
-    init_master(config_path)
+    init(config_path)
     goaway(square, 1)
     goaway(cube, 2)
     goaway(sqrt, 3)
