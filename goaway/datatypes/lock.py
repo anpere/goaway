@@ -1,12 +1,12 @@
 """ a goaway lock """
-import uuid
+import random
 import thread
 import goaway.rpc as rpc
 import goaway.globalvars as globalvars
 
 class Lock(object):
     def __init__(self, name):
-        self.uuid = uuid.uuid1() # Unique to the process (who is holding the lock)
+        self.uuid = random.random() # Unique to the process (who is holding the lock)
         self.name = name # All acquires happen on the same name
         self.acquired = False # Whether I've currently got the lock
 
