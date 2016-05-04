@@ -38,7 +38,11 @@ class ObjectHandle(object):
         ## The cmdserver can return various types of data.
         ## The cmdserver can return an integer, or it can return a dictionary
         object_data = store.get(object_name, field)
-        return object_data
+        try:
+            return object_data[field]
+        except KeyError:
+            raise AttributeError("Object<{}> has no such attribute '{}'"
+                                 .format(object_name, field))
 
     def __setattr__(self, field, value):
         """
