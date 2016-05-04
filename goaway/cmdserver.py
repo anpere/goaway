@@ -271,6 +271,8 @@ if __name__ == "__main__":
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
     print "Configpath :%s" % (config_path)
+    ## create datastores
+    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
     # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
     with open(config_path, "r") as stream:
         config = ClusterConfig(yaml.load(stream))

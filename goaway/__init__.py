@@ -5,7 +5,6 @@ import globalvars
 import signal
 from remotecontrol import RemoteControl
 from objectconstructors import *
-from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
 from weakdatastorehandle import WeakDataStoreHandle
 from goawaydict import GoawayDict
 import logging
@@ -27,8 +26,8 @@ def init_master(config_path):
     """
 
     print "starting master ..."
-    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
     print "in init strictCDSH %s" % (globalvars.strictCentralizedDataStoreHandle)
+    ##TODO AP: initialize in a weak objecthandle contsructor
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path, "localhost")
     print "in init ref of rc %s" % (globalvars.rc.__hash__)
