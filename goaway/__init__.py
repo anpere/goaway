@@ -15,7 +15,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 ## User runs this function to start off system
 ## probably will read the config file for info
 ## on cluster config, and maybe imports
-def init_master(config_path):
+def init(config_path):
     """
     Initiliazes a master that runs locally.
     On startup that master wakes up its remote slaves
@@ -37,13 +37,6 @@ def init_master(config_path):
     ## If it happens before, every command server will execute the ctrl-c hook
     signal.signal(signal.SIGINT, globalvars.sigint)
     signal.siginterrupt(signal.SIGINT, False)
-
-# AP: I don't see the purpose of this.
-# I see this file as the api we wish to expose to users. For things to appear
-# As seamless as possible, I think users should only worry about initializing
-# their system.
-def init_slave():
-    pass
 
 def goaway(fn, *args, **kwargs):
     """ fn is a function, not a string. Its args are *args & **kwargs """
