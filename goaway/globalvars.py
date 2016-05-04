@@ -24,7 +24,5 @@ def sigint(a, b):
         Original intention is to kill the remote servers
         When the user is finished using goaway """
 
-    print "Why you trying to globally kill me?"
-    print "ref of rc in globalvars %s" % (rc.__hash__)
     rc.kill_servers()
     sys.exit(0)

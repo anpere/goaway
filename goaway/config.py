@@ -45,7 +45,6 @@ def _split_server_address(server_string):
         return ServerAddress(user, host, port)
     else:
         ip_address = server_string.split(":")
-        print ip_address
         assert len(ip_address) == 2
         host, port = ip_address[0], int(ip_address[1])
         return ServerAddress(None, host, port)

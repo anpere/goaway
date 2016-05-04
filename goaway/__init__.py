@@ -48,9 +48,7 @@ def goaway(fn, *args, **kwargs):
     """ fn is a function, not a string. Its args are *args & **kwargs """
     source = inspect.getsource(fn)
     name = fn.__name__
-    print "goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs)
+    logger.debug("goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs))
     ## TODO: probably take a pickled function
     file_name = inspect.getfile(fn)
-    print "in goaway ref of rc %s" % (globalvars.rc.__hash__)
-    print "at least one server alive before goaway call? %s" % (globalvars.rc.check_servers())
     globalvars.rc.goaway(file_name, name, *args, **kwargs)

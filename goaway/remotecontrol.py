@@ -50,20 +50,12 @@ class RemoteControl(object):
                 proc.daemon = True
                 proc.start()
             else:
-                print "Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path)
+                logger.debug("Starting remote server: %s:%s with config_path:%s" % (host, port, self.config_path))
                 remoteHost = "%s@%s" % (user, host)
                 command = "cd ~/goaway; DEBUG=true goaway/cmdserver.py %s" % (self.config_path)
-                # command  = "cd ~/goaway ; goaway/foo.sh"
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
                 sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
 
-                ## Wait until server is up and running
-                ##  while (not self._check_server(user, host, port)):
-                ##      continue
-                ##  print "server %s@%s:%s is up" %(user, host, port)
-
-
-                ## need to start a proc on a different machine
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
             user, host, port = self.server_addresses[server_id]
@@ -74,9 +66,9 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
-            print "rsync -r %s %s:%s" % (src_path, user+"@"+host, trg_path)
+            logger.debug("rsync -r --exclude .git server.log %s %s:%s" % (src_path, user+"@"+host, trg_path))
             os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git server.log", src_path, user + "@" + host, trg_path))
-            print "done rysncing"
+            logger.debug("done rysncing")
 
     def server_count(self):
         return len(self.server_addresses)
@@ -110,7 +102,7 @@ class RemoteControl(object):
 
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
         user, host, port = self.server_addresses[server_id]
-        print "running %s(%s) on %s:%s" % (function_name, args, host, port)
+        logger.debug("running %s(%s) on %s:%s" % (function_name, args, host, port))
         result = CmdClient(user, host, port).run_remote(file_name, function_name, *args, **kwargs)
         return
 

@@ -69,19 +69,12 @@ def run():
     app.logger.warning("file:%s"%(function_path))
     app.logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
-    # module_file, module_pathname, module_description = imp.find_module(module_name)
-    # print "Module_file, module_pathname, module_descripton: %s %s %s" % ( module_file, module_pathname, module_description)
     s_file = open(function_path, 'U')
     s_description = ('.py', 'U', 1)
-    # print "Sketchy MF, MP, MD %s %s %s" % (s_file, function_path, s_description)
-    # module = imp.load_module(module_name, module_file, module_pathname, module_description)
     module = imp.load_module(module_name, s_file, function_path, s_description)
-    '''
-    todo: maybe not needed
-    if module_na not in getModules():
-        imp.load_source(module_name, function_path)
-    print module
-    '''
+    ## TODO don't import modules that have already been imported
+    ## if module_na not in getModules():
+    ##     imp.load_source(module_name, function_path)
     app.logger.info("server now running: %s(%s,%s)" % (getattr(module, function_name).__name__, function_args, function_kwargs))
     thread = threading.Thread(target=lambda: _run_in_thread(getattr(module, function_name), *function_args, **function_kwargs))
     thread.daemon = True
@@ -202,13 +195,11 @@ def start_server(port, config):
     debugOn = os.environ.get("DEBUG", False) == "true"
     app.logger.info("Server debug %s", "on" if debugOn else "off")
     app.logger.debug("starting server")
-    ''' TODO
-    for module in config.data["modules"]:
-        module_name, module_path = module.split(" ")
-        module_path = os.path.expandvars(module_path)
-        print module_name, module_path
-        imp.load_source(module_name, module_path)
-    '''
+    ## TODO
+    ##for module in config.data["modules"]:
+    ##    module_name, module_path = module.split(" ")
+    ##    module_path = os.path.expandvars(module_path)
+    ##    imp.load_source(module_name, module_path)
     try:
         # Set up logging to only go to files.
         logfile = "server.log"
@@ -253,11 +244,10 @@ def getModules():
             modules.append(val.__name__)
 
 if __name__ == "__main__":
-    print "HELLO"
     app.logger.debug("main is running")
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
-    print "Configpath :%s" % (config_path)
+    logger.debug("Configpath :%s" % (config_path))
     ## create datastores
     globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
     # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))

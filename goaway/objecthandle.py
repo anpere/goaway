@@ -30,7 +30,6 @@ class ObjectHandle(object):
         """
         Hook when an attribute is fetched.
         """
-        print "getting field %s" % (field)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
         ## Field is not used in get intentionally
@@ -51,7 +50,6 @@ class ObjectHandle(object):
         """
         Hook when an attribute is set.
         """
-        print "setting field %s, value %s" % (field, value)
         store = getattr(self, DATA_STORE_HANDLE_ATTR)
         object_name = getattr(self, NAME_ATTR)
         store.set(object_name, field, value)
