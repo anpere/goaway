@@ -42,10 +42,12 @@ def grow_shared(append_string):
     ## set(data_path, new_value)
 
 if __name__ == "__main__":
-    print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
-    run = raw_input("Continue [y/N]")
-    if run != 'y':
-        sys.exit(0)
+    if os.environ.get("GOAWAYPATH") == None:
+        print "Goaway requires that you set $GOAWAYPATH. Otherwise it would rsync stuff willy nilly."
+        sys.exit(1)
+    if len(sys.argv) != 2:
+        print "Usage: demo.py <place>"
+        sys.exit(1)
     place = sys.argv[1]
     if place=="remote":
         config_name = "remote.yaml"
