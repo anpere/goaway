@@ -66,8 +66,9 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
-            logger.debug("rsync -r --exclude .git server.log %s %s:%s" % (src_path, user+"@"+host, trg_path))
-            os.system('rsync -r --exclude "%s" "%s" "%s:%s"' % (".git server.log", src_path, user + "@" + host, trg_path))
+            rsync_command = 'rsync -r --exclude-from rsync_ignore.txt "%s" "%s:%s"' % (src_path, user + "@" + host, trg_path)
+            logger.debug(rsync_command)
+            os.system(rsync_command)
             logger.debug("done rysncing")
 
     def server_count(self):

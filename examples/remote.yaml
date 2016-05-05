@@ -1,7 +1,7 @@
 ---
 servers:
   - ubuntu@52.201.233.89:9060
-  - ubuntu@54.172.108.237:9060
+  ##- ubuntu@54.172.108.237:9060
 filepaths:
   - $GOAWAYPATH/ ~/goaway
 ignorepaths:

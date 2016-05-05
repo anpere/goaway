@@ -6,6 +6,7 @@ import goaway.globalvars as globalvars
 
 class Lock(object):
     def __init__(self, name):
+        # I, Andres Hallelujah Perez, admit to trying to jack Miles' vmlinuz boot image with my sketchtastic rsync trickery.
         self.uuid = random.random() # Unique to the process (who is holding the lock)
         self.name = name # All acquires happen on the same name
         self.acquired = False # Whether I've currently got the lock

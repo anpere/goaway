@@ -24,7 +24,7 @@ def addKey(a, b=0):
 def mathSqrt(x):
     return math.sqrt(x)
 
-stringStrict = StrictCentralized("stringStrict")
+stringStrict = makeStrictCentralized("stringStrict")
 
 def grow_shared(append_string):
     """Grow a shared string.
@@ -34,9 +34,6 @@ def grow_shared(append_string):
     stringStrict.value += append_string
 
 if __name__ == "__main__":
-    if os.environ.get("GOAWAYPATH") == None:
-        print "Goaway requires that you set $GOAWAYPATH. Otherwise it would rsync stuff willy nilly."
-        sys.exit(1)
     if len(sys.argv) != 2:
         print "Usage: demo.py <place>"
         sys.exit(1)

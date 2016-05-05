@@ -32,6 +32,10 @@ def init(config_path):
        config_path: string lists path of config file for slaves to use
        TODO: dsm: DataStore object to be shared across machines
     """
+    print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
+    run = raw_input("Continue [y/N]")
+    if run != 'y':
+        sys.exit(0)
     logger.info("starting master ...")
     ##TODO AP: initialize in a weak objecthandle contsructor
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
@@ -52,3 +56,6 @@ def goaway(fn, *args, **kwargs):
     ## TODO: probably take a pickled function
     file_name = inspect.getfile(fn)
     globalvars.rc.goaway(file_name, name, *args, **kwargs)
+
+def makeStrictCentralized(name):
+    return StrictCentralized(name)

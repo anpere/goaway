@@ -69,7 +69,9 @@ def run():
     app.logger.warning("file:%s"%(function_path))
     app.logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
+    app.logger.warning(module_name)
     s_file = open(function_path, 'U')
+    app.logger.warning("opening file")
     s_description = ('.py', 'U', 1)
     module = imp.load_module(module_name, s_file, function_path, s_description)
     ## TODO don't import modules that have already been imported
@@ -191,6 +193,7 @@ def start_server(port, config):
         port: Port to run on.
         config: Result of yaml.load'ing the config file.
     """
+    debug("start_server running")
     globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
     debugOn = os.environ.get("DEBUG", False) == "true"
     app.logger.info("Server debug %s", "on" if debugOn else "off")
@@ -243,14 +246,19 @@ def getModules():
         if isInstance(val, types.ModuleType):
             modules.append(val.__name__)
 
+def debug(message):
+    server_debug.write(message+"\n")
+    server_debug.flush()
 if __name__ == "__main__":
+    debug("main is running")
     app.logger.debug("main is running")
     assert len(sys.argv) == 2
     config_path = sys.argv[1]
-    logger.debug("Configpath :%s" % (config_path))
+    app.logger.debug("Configpath :%s" % (config_path))
     ## create datastores
     globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
     # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
+    debug("strict data store made")
     with open(config_path, "r") as stream:
         config = ClusterConfig(yaml.load(stream))
     start_server(9060, config)
