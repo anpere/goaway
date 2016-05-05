@@ -32,10 +32,16 @@ if __name__ == "__main__":
     config_path = os.path.join(os.path.dirname(__file__), config_name)
     goaway.init(config_path)
 
+    print "Started."
+    print "Setting val to 0."
     s.val = 0
     assert(s.val == 0)
+    print "Starting goaway routine to set val to 5."
     goaway.goaway(set_shared, 5)
+    print "Waiting for val to be non-zero..."
     while s.val == 0:
+        print "Still waiting..."
         time.sleep(.05)
+    print "Received non-0 value."
     assert(s.val == 5)
     print "Success."
