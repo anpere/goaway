@@ -3,9 +3,11 @@ Client for communicating with a cmdserver.
 """
 
 import requests
+import logging
 
 from common import RpcException
 
+logger = logging.getLogger(__name__)
 
 class CmdClient(object):
     def __init__(self, user, host, port):
@@ -30,13 +32,13 @@ class CmdClient(object):
             return False
 
     def kill(self):
-        """Kills the mentioned server
+        """Kills the server.
+        Returns: Boolean whether the kill command went through.
         """
         try:
             res = requests.post(self._url("kill"))
             return True
-        except Exception as ex:
-            print ex
+        except requests.exceptions.RequestException as ex:
             return False
         if res.status_code != 200:
             return False

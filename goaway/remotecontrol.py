@@ -98,6 +98,7 @@ class RemoteControl(object):
     def _kill_server(self, user, host, port):
         logger.info("killing %s:%s" % (host, port))
         result = CmdClient(user, host, port).kill()
+        # Ignore the result of whether the server received the command.
         return
 
     def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
