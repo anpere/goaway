@@ -1,13 +1,13 @@
 """ a goaway lock """
 import random
-import thread
+import threading
+import uuid
 import goaway.rpc as rpc
 import goaway.globalvars as globalvars
 
 class Lock(object):
     def __init__(self, name):
-        # I, Andres Hallelujah Perez, admit to trying to jack Miles' vmlinuz boot image with my sketchtastic rsync trickery.
-        self.uuid = random.random() # Unique to the process (who is holding the lock)
+        self.uuid = str(uuid.uuid4()) # Unique to the process (who is holding the lock)
         self.name = name # All acquires happen on the same name
         self.acquired = False # Whether I've currently got the lock
 
@@ -19,7 +19,7 @@ class Lock(object):
                 "name": self.name}
         while True:
             resj = rpc.rpc("POST", rpc.master_url("lock/acquire"), data)
-            if resj["ok"] == "ok": #TODO sketchy string
+            if resj["ok"] == "ok":
                 self.acquired = True
                 return
 
@@ -27,9 +27,11 @@ class Lock(object):
         """ doesn't block """
         if self.acquired:
             self.acquired = False
-            thread.start_new_thread(self._release_async())
+            thread = threading.Thread(target=self._release_sync)
+            thread.daemon = True
+            thread.start()
 
-    def _release_async(self):
+    def _release_sync(self):
         """ sends release notice """
         data = {"uuid": self.uuid,
                 "name": self.name}
