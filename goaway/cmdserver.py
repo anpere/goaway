@@ -193,35 +193,43 @@ def start_server(port, config):
         port: Port to run on.
         config: Result of yaml.load'ing the config file.
     """
-    debug("start_server running")
     globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
     debugOn = os.environ.get("DEBUG", False) == "true"
-    app.logger.info("Server debug %s", "on" if debugOn else "off")
-    app.logger.debug("starting server")
+
     ## TODO
     ##for module in config.data["modules"]:
     ##    module_name, module_path = module.split(" ")
     ##    module_path = os.path.expandvars(module_path)
     ##    imp.load_source(module_name, module_path)
+
+    # Set up logging to only go to files.
+    logfile = "server-{}.log".format(port)
+    # handler = RotatingFileHandler(logfile, maxBytes=10000, backupCount=1)
+    handler = logging.handlers.WatchedFileHandler(logfile)
+    formatter = logging.Formatter(
+        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+
+    root_logger = logging.getLogger('')
+    root_logger.handlers = []
+    root_logger.addHandler(handler)
+
+    # The following has been superceded by the root logger.
+    # app.logger.handlers = []
+    # app.logger.addHandler(handler)
+    werkzeug_logger = logging.getLogger("werkzeug")
+    # werkzeug_logger.handlers = []
+    # werkzeug_logger.addHandler(handler)
+    # # The werkzeug logger somehow still outputs to stdout, so this silences it.
+    werkzeug_logger.setLevel(logging.ERROR)
+
+    debug("start_server running")
+    app.logger.info("Starting server...")
+    if debugOn:
+        app.logger.warn("Server debug is on")
+
     try:
-        # Set up logging to only go to files.
-        logfile = "server.log"
-        handler = RotatingFileHandler(logfile, maxBytes=10000, backupCount=1)
-        formatter = logging.Formatter(
-            "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
-        handler.setLevel(logging.DEBUG)
-        handler.setFormatter(formatter)
-
-        app.logger.handlers = []
-        app.logger.addHandler(handler)
-        werkzeug_logger = logging.getLogger("werkzeug")
-        werkzeug_logger.handlers = []
-        werkzeug_logger.addHandler(handler)
-        # The werkzeug logger somehow still outputs to stdout, so this silences it.
-        werkzeug_logger.setLevel(logging.ERROR)
-
-        app.logger.warning("running app")
-
         # Always disable auto-reloader.
         # It is dangerous when running as a subprocess.
         app.run(host="0.0.0.0", port=port,
@@ -237,6 +245,8 @@ def start_server(port, config):
         # Error when killed by user.
         print "Server exiting on port {} due to KeyboardInterrupt.".format(port)
         sys.exit(0)
+    except Exception as ex:
+        logging.exception(ex, exc_info=True)
 
 ## imported from http://stackoverflow.com/questions/4858100/how-to-list-imported-modules
 def getModules():
