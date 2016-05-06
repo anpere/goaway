@@ -2,7 +2,7 @@
 A test of GoAway locks.
 
 Owner: jessk
-Status: Broken
+Status: Works
 """
 import sys
 import os
