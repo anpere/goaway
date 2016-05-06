@@ -9,7 +9,8 @@ def setup():
     root = logging.getLogger()
     root.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s")
 
     stream = logging.StreamHandler(sys.stdout)
     stream.setLevel(logging.DEBUG)

@@ -22,7 +22,7 @@ class ObjectHandle(object):
             store: The DataStoreHandle to use to manage state.
             name: The unique identifier of the object.
         """
-        logger.debug("datastore object:%s" % (dataStoreHandle.__hash__))
+        # logger.debug("datastore object:%s" % (dataStoreHandle.__hash__))
         self.__dict__[DATA_STORE_HANDLE_ATTR] = dataStoreHandle
         self.__dict__[NAME_ATTR] = name
 

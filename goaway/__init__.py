@@ -40,7 +40,6 @@ def init(config_path):
     ##TODO AP: initialize in a weak objecthandle contsructor
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path, "localhost")
-    logger.debug("in init ref of rc %s" % (globalvars.rc.__hash__))
     serversAlive = globalvars.rc.check_servers()
     logger.debug("started master. serversAlive? %s" % (serversAlive))
     ## Sets the hook for interrupts. This needs to happen after forking.
@@ -52,7 +51,7 @@ def goaway(fn, *args, **kwargs):
     """ fn is a function, not a string. Its args are *args & **kwargs """
     source = inspect.getsource(fn)
     name = fn.__name__
-    logger.debug("goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs))
+    # logger.debug("goaway is calling %s(%s, %s)" % (fn.__name__, args, kwargs))
     ## TODO: probably take a pickled function
     file_name = inspect.getfile(fn)
     globalvars.rc.goaway(file_name, name, *args, **kwargs)

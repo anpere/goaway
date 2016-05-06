@@ -23,9 +23,12 @@ import objectconstructors
 
 app = Flask(__name__)
 
+# Storage for StrictCentralizedDatastore
+# TODO rename this.
 store = {}
 locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 store_lock = threading.RLock()
+
 locks_lock = threading.RLock() # hee hee hee
 server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
@@ -36,8 +39,6 @@ def hello():
 
 @app.route("/check", methods=["GET"])
 def check():
-    app.logger.info("server was checked on")
-    app.logger.debug("server was checked on")
     """Check that a server is responding."""
     return jsonify({"ok": "ok"})
 
@@ -58,20 +59,17 @@ def kill_server():
 
 @app.route("/run", methods=["POST"])
 def run():
-    app.logger.warning("run recieved")
-    app.logger.debug("run recieved")
     call = request.json
 
     function_name = call["function_name"]
     function_args = call["args"]
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
-    app.logger.warning("file:%s"%(function_path))
-    app.logger.warning("file path:%s"% (os.getcwd()))
+    # app.logger.warning("file:%s"%(function_path))
+    # app.logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
-    app.logger.warning(module_name)
+    # app.logger.warning(module_name)
     s_file = open(function_path, 'U')
-    app.logger.warning("opening file")
     s_description = ('.py', 'U', 1)
     module = imp.load_module(module_name, s_file, function_path, s_description)
     ## TODO don't import modules that have already been imported
@@ -179,35 +177,20 @@ def release_lock():
     return jsonify(res)
 
 def _run_in_thread(function, *args, **kwargs):
-    # Simulate a slow execution.
-    ## TODO: get rid of sleeps
-    ## time.sleep(2)
-    ## AP: had to get rid of time.sleep(2) because it wasn't working with it
-    result = function(*args, **kwargs)
-    app.logger.info("Server result {}".format(result))
+    """Run a function in a daemon thread."""
+    thread = threading.Thread(target=function, args=args, kwargs=kwargs)
+    thread.daemon = True
+    thread.start()
 
-
-def start_server(port, config):
-    """Start the cmd server. This method is blocking.
-    Args:
-        port: Port to run on.
-        config: Result of yaml.load'ing the config file.
-    """
-    globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
-    debugOn = os.environ.get("DEBUG", False) == "true"
-
-    ## TODO
-    ##for module in config.data["modules"]:
-    ##    module_name, module_path = module.split(" ")
-    ##    module_path = os.path.expandvars(module_path)
-    ##    imp.load_source(module_name, module_path)
+def setup_logging(port):
+    """Configure logging for the server."""
 
     # Set up logging to only go to files.
     logfile = "server-{}.log".format(port)
     # handler = RotatingFileHandler(logfile, maxBytes=10000, backupCount=1)
     handler = logging.handlers.WatchedFileHandler(logfile)
     formatter = logging.Formatter(
-        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+        "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s")
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(formatter)
 
@@ -224,8 +207,29 @@ def start_server(port, config):
     # # The werkzeug logger somehow still outputs to stdout, so this silences it.
     werkzeug_logger.setLevel(logging.ERROR)
 
+
+def start_server(port, config):
+    """Start the cmd server. This method is blocking.
+    Args:
+        port: Port to run on.
+        config: Result of yaml.load'ing the config file.
+    """
+    # Re-initialize the uuid, in case this was a fork.
+    globalvars.proc_uuid = uuid.uuid4()
+    globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
+    debugOn = os.environ.get("DEBUG", False) == "true"
+
+    setup_logging(port)
+
+    ## TODO
+    ##for module in config.data["modules"]:
+    ##    module_name, module_path = module.split(" ")
+    ##    module_path = os.path.expandvars(module_path)
+    ##    imp.load_source(module_name, module_path)
+
     debug("start_server running")
-    app.logger.info("Starting server...")
+    # Show a separator.
+    app.logger.info("Starting server..." + "\n" * 5 + "-" * 20 + "\n" * 5)
     if debugOn:
         app.logger.warn("Server debug is on")
 
