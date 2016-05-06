@@ -40,9 +40,8 @@ if __name__ == "__main__":
     for i in range(10):
         goaway.goaway(increment_and_copy)
 
-    #while s.num < 10:
-    #    pass #wait
-    sleep(5)
+    while s.num < 10:
+        sleep(.05)
 
     r1 = s.num
     r2 = s.num2

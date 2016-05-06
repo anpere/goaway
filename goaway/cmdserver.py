@@ -14,8 +14,10 @@ import time
 import threading
 import imp
 import types
+import uuid
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
+from datatypes.lockingcontainer import LockingContainer
 
 import globalvars ## AP: removed to temporarily fix problems with ^C
 from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
@@ -26,10 +28,15 @@ app = Flask(__name__)
 # Storage for StrictCentralizedDatastore
 # TODO rename this.
 store = {}
-locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 store_lock = threading.RLock()
 
 locks_lock = threading.RLock() # hee hee hee
+locks = {} # key: lock name (string); value: owner's uuid or None if unheld
+
+# Keep track of which modules have been imported.
+# (Container of) dict from module name to module if imported.
+imported_modules_locked = LockingContainer({})
+
 server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
@@ -71,15 +78,21 @@ def run():
     # app.logger.warning(module_name)
     s_file = open(function_path, 'U')
     s_description = ('.py', 'U', 1)
-    module = imp.load_module(module_name, s_file, function_path, s_description)
+
+    # Import the module or fetch it if already imported.
+    with imported_modules_locked as imported_modules:
+        if imported_modules.get(module_name):
+            module = imported_modules[module_name]
+        else:
+            module = imp.load_module(module_name, s_file, function_path, s_description)
+            imported_modules[module_name] = module
+
     ## TODO don't import modules that have already been imported
     ## if module_na not in getModules():
     ##     imp.load_source(module_name, function_path)
-    app.logger.info("server now running: %s(%s,%s)" % (getattr(module, function_name).__name__, function_args, function_kwargs))
-    thread = threading.Thread(target=lambda: _run_in_thread(getattr(module, function_name), *function_args, **function_kwargs))
-    thread.daemon = True
-    thread.start()
-
+    function = getattr(module, function_name)
+    app.logger.info("server starting: %s %s %s", function.__name__, function_args, function_kwargs)
+    _run_in_thread(function, *function_args, **function_kwargs)
     return jsonify({"ok": "ok"})
 
 
@@ -160,6 +173,7 @@ def acquire_lock():
                 res = {"ok": "false"}
                 return jsonify(res)
         locks[lock_name] = requester_uuid
+    app.logger.debug("lock [%s] acquired by [%s]", lock_name, requester_uuid)
     res = {"ok": "ok"}
     return jsonify(res)
 
@@ -169,10 +183,10 @@ def release_lock():
     requester_uuid = request.json['uuid']
     lock_name = request.json['name']
     with locks_lock:
-        if lock_name in locks and locks[lock_name] == requester_uuid:
-            locks[lock_name] = None
-            res = {"ok": "ok"}
-            return jsonify(res)
+        locks[lock_name] = None
+        app.logger.debug("lock [%s] released", lock_name)
+        res = {"ok": "ok"}
+        return jsonify(res)
     res = {"ok": "false"}
     return jsonify(res)
 
