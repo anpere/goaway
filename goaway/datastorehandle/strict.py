@@ -1,8 +1,8 @@
 import requests
 
-import globalvars
-from common import RpcException
-from datastorehandle import DataStoreHandle
+import goaway.globalvars as globalvars
+from goaway.common import RpcException
+from goaway.datastorehandle import DataStoreHandle
 
 
 class StrictDataStoreHandle(DataStoreHandle):

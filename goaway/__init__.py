@@ -14,6 +14,7 @@ from objectconstructors import *
 from weakdatastorehandle import WeakDataStoreHandle
 from goawaydict import GoawayDict
 from datatypes import *
+from datastorehandle import *
 
 logger = logging.getLogger(__name__)
 

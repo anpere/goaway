@@ -1,9 +1,9 @@
 import requests
 
-import globalvars
-import rpc
-from common import RpcException
-from datastorehandle import DataStoreHandle
+import goaway.globalvars as globalvars
+import goaway.rpc as rpc
+from goaway.common import RpcException
+from goaway.datastorehandle import DataStoreHandle
 
 
 class StrictCentralizedDataStoreHandle(DataStoreHandle):
