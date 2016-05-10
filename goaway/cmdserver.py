@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 """Cmd server."""
+server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
+def debug(message):
+    server_debug.write(message+"\n")
+    server_debug.flush()
 from flask import Flask, request, jsonify
 import logging
 from logging.handlers import RotatingFileHandler
@@ -17,11 +21,16 @@ import types
 import uuid
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
+debug("system imports okay")
 from datatypes.lockingcontainer import LockingContainer
+debug("locking imports good")
 
 from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
+debug("globalvars imports good")
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
+debug("strictcentralizeddatastorehandle imports good")
 import goaway.objectconstructors as objectconstructors
+debug("imports successfully")
 
 app = Flask(__name__)
 
@@ -35,9 +44,8 @@ locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 
 # Keep track of which modules have been imported.
 # (Container of) dict from module name to module if imported.
-imported_modules_locked = LockingContainer({})
+# imported_modules_locked = LockingContainer({})
 
-server_debug = open("server.debug", 'w') ## TODO: handle multiple ports
 
 @app.route("/", methods=["GET"])
 def hello():
@@ -274,9 +282,6 @@ def getModules():
         if isInstance(val, types.ModuleType):
             modules.append(val.__name__)
 
-def debug(message):
-    server_debug.write(message+"\n")
-    server_debug.flush()
 
 if __name__ == "__main__":
     debug("main is running")
