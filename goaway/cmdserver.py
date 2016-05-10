@@ -19,9 +19,9 @@ from config import ClusterConfig ## AP: imported so that main can create a confi
 import yaml
 from datatypes.lockingcontainer import LockingContainer
 
-import globalvars ## AP: removed to temporarily fix problems with ^C
-from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
-import objectconstructors
+from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
+from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
+import goaway.objectconstructors as objectconstructors
 
 app = Flask(__name__)
 

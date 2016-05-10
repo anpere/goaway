@@ -9,9 +9,10 @@ import logging
 import logsetup
 logsetup.setup()
 
+import rpc
 from remotecontrol import RemoteControl
 from objectconstructors import *
-from weakdatastorehandle import WeakDataStoreHandle
+from datastorehandle.weak import WeakDataStoreHandle
 from datatypes import *
 from datastorehandle import *
 

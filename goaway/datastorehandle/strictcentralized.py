@@ -3,7 +3,7 @@ import requests
 import goaway.globalvars as globalvars
 import goaway.rpc as rpc
 from goaway.common import RpcException
-from goaway.datastorehandle import DataStoreHandle
+from goaway.datastorehandle.datastorehandle import DataStoreHandle
 
 
 class StrictCentralizedDataStoreHandle(DataStoreHandle):

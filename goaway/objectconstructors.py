@@ -1,5 +1,5 @@
 from objecthandle import ObjectHandle
-from strictcentralizeddatastorehandle import StrictCentralizedDataStoreHandle
+from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
 import globalvars
 import logging
 
