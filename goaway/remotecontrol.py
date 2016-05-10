@@ -51,7 +51,7 @@ class RemoteControl(object):
                 proc.start()
             else:
                 remoteHost = "%s@%s" % (user, host)
-                command = "cd ~/goaway; DEBUG=true goaway/cmdserver.py %s" % (self._config.remote_path)
+                command = "cd ~/goaway; find . -name '*.pyc' -delete ; DEBUG=true goaway/cmdserver.py %s" % (self._config.remote_path)
                 logger.debug("Starting server:%s remoteHost with command:%s" % (remoteHost, command))
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
                 sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
