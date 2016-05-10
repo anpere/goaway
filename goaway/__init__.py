@@ -14,6 +14,7 @@ from remotecontrol import RemoteControl
 from objectconstructors import *
 from datastorehandle.weak import WeakDataStoreHandle
 from datatypes import *
+from datatypes.lock import Lock
 from datastorehandle import *
 
 logger = logging.getLogger(__name__)
