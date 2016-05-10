@@ -4,8 +4,10 @@ This should always report success.
 """
 import sys
 import os
-import goaway
 import time
+
+import goaway
+import common
 
 goaway.logger.setLevel("CRITICAL")
 
@@ -15,21 +17,8 @@ def set_shared(x):
     s.val = x
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Usage: deadsimple.py <place>"
-        sys.exit(1)
-    place = sys.argv[1]
-    if place=="remote":
-        config_name = "remote.yaml"
-    elif place=="local":
-        config_name = "local.yaml"
-    elif place=="all":
-        config_name = "config.yaml"
-    else:
-        sys.exit("expected locality argument to be either all, remote, or local")
-        config_string
+    config_path = common.select_config()
 
-    config_path = os.path.join(os.path.dirname(__file__), config_name)
     goaway.init(config_path)
 
     print "Started."

@@ -1,9 +1,11 @@
 import sys
 import os
-from goaway import *
 import os
 import math
 import time
+
+from goaway import *
+import common
 
 def square(x):
     return x*x
@@ -33,20 +35,8 @@ def grow_shared(append_string):
     stringStrict.value += append_string
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Usage: demo.py <place>"
-        sys.exit(1)
-    place = sys.argv[1]
-    if place=="remote":
-        config_name = "remote.yaml"
-    elif place=="local":
-        config_name = "local.yaml"
-    elif place=="all":
-        config_name = "config.yaml"
-    else:
-        sys.exit("expected locality argument to be either all, remote, or local")
-        config_string
-    config_path = os.path.join(os.path.dirname(__file__), config_name)
+    config_path = common.select_config()
+
     num_of_servers = 6
 
     init(config_path)
