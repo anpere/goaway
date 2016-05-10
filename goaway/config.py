@@ -1,24 +1,23 @@
 import collections
+import yaml
 
 
 class ClusterConfig(object):
-    def __init__(self, data, filepath=None):
+    """Reads and provides access to a configuration file."""
+    def __init__(self, config_path):
         """Create a wrapper for a goaway cluster configuration.
         Args:
-            data: The result of yaml.load'ing the config file.
-            filepath: Filepath to config yaml file.
-                      Used only if data=None.
+            config_path: The (probably absolute) path to the config yaml file.
         """
-        if not isinstance(data, dict):
-            raise RuntimeError("ClusterConfig created with data of type {}".format(type(data)))
-        if data == None:
-            if filepath == None:
-                raise RuntimeError("ClusterConfig created with data=None and filepath=None")
-            with open(filepath, "r") as stream:
-                self.data = yaml.load(stream)
-        else:
-            self.data = data
+        if not isinstance(config_path, str):
+            raise RuntimeError("ClusterConfig created with config_path of type {}".format(type(config_path)))
 
+        # Store into self.data the result of yaml.load-ing the config file.
+        with open(config_path, "r") as stream:
+            self.data = yaml.load(stream)
+
+        self.local_path = config_path
+        self.remote_path = self.data["remote_config_path"]
         self.servers = map(_split_server_address, self.data["servers"])
 
 

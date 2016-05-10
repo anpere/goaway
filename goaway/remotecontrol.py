@@ -3,7 +3,6 @@ import os
 import multiprocessing
 import subprocess
 import time
-import yaml
 import signal
 import logging
 
@@ -23,13 +22,12 @@ max_tries = 3
 class RemoteControl(object):
     """Handle on remote goaway servers."""
     def __init__(self, config_path, myaddress=None):
-        with open(config_path, "r") as stream:
-            self._config = ClusterConfig(yaml.load(stream))
-            globalvars.config = self._config
-
+        self._config = ClusterConfig(config_path)
+        globalvars.config = self._config
+        logging.debug("using local  config path: %s", self._config.local_path)
+        logging.debug("using remote config path: %s", self._config.remote_path)
 
         self.myaddress = myaddress
-        self.config_path = config_path
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
@@ -53,7 +51,7 @@ class RemoteControl(object):
                 proc.start()
             else:
                 remoteHost = "%s@%s" % (user, host)
-                command = "cd ~/goaway; DEBUG=true goaway/cmdserver.py %s" % (self.config_path)
+                command = "cd ~/goaway; DEBUG=true goaway/cmdserver.py %s" % (self._config.remote_path)
                 logger.debug("Starting server:%s remoteHost with command:%s" % (remoteHost, command))
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
                 sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
@@ -68,6 +66,8 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
+            src_path = src_path + "/"
+            trg_path = trg_path + "/"
             if "$GOAWAYPATH" in src_path or  "$GOAWAYPATH" in trg_path:
                 try:
                     os.environ["GOAWAYPATH"]

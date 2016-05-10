@@ -1,11 +1,15 @@
-
 ---
 servers:
   - localhost:9060
   - localhost:9061
   - localhost:9062
+
+# Path that the config file appears on the remote.
+remote_config_path: /home/ubuntu/goaway/examples/local.yaml
+
 filepaths:
   - $GOAWAYPATH/ ~/goaway
+
 ignorepaths:
   - /todo /todo
   - /Users/anpere/Documents/Year15/sp/goaway/ home/ubuntu/goaway
