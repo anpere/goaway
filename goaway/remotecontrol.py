@@ -13,6 +13,7 @@ from config import ClusterConfig
 import globalvars
 import threading
 import pickle
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,10 @@ class RemoteControl(object):
         user, host, port = self.server_addresses[server_id]
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
+            try:
+                os.environ["GOAWAYPATH"]
+            except KeyError:
+                sys.exit("no goawaypath defined")
             rsync_command = 'rsync -r --exclude-from rsync_ignore.txt "%s" "%s:%s"' % (src_path, user + "@" + host, trg_path)
             logger.debug(rsync_command)
             os.system(rsync_command)
