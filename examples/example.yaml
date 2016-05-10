@@ -1,0 +1,16 @@
+---
+servers:
+  - ubuntu@52.201.233.99:9060
+  - ubuntu@54.172.108.227:9060
+
+# Path that the config file appears on the remote.
+remote_config_path: /home/ubuntu/goaway/examples/remote.yaml
+
+filepaths:
+  - $GOAWAYPATH/ ~/goaway
+
+ignorepaths:
+  - /Users/anpere/Documents/Year15/sp/goaway/ home/ubuntu/goaway
+
+modules:
+  - examples $GOAWAYPATH/examples

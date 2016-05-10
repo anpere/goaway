@@ -1,6 +1,8 @@
 *.pyc
 *.egg-info
 examples/config.yaml
+examples/local.yaml
+examples/remote.yaml
 server.log*
 server-*.log
 server.debug
