@@ -1,5 +1,6 @@
 """
 A test of GoAway locks.
+Increments a counter guarded by a lock 10 times.
 
 Owner: jessk
 Status: Works
@@ -45,5 +46,9 @@ if __name__ == "__main__":
 
     r1 = s.num
     r2 = s.num2
-    print "RESULT1", r1
-    print "RESULT2", r2
+
+    print "Result num", r1
+    print "Result num2", r2
+
+    assert(r1 == 10)
+    assert(r2 == 10)
