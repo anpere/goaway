@@ -24,13 +24,12 @@ SERVER_START_TIMEOUT = 3.0
 
 class RemoteControl(object):
     """Handle on remote goaway servers."""
-    def __init__(self, config_path, myaddress=None):
+    def __init__(self, config_path):
         self._config = ClusterConfig(config_path)
         globalvars.config = self._config
         logging.debug("using local  config path: %s", self._config.local_path)
         logging.debug("using remote config path: %s", self._config.remote_path)
 
-        self.myaddress = myaddress
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
@@ -43,27 +42,30 @@ class RemoteControl(object):
             raise RuntimeError("servers could not be started")
 
     def _start_servers(self):
-        """Start any servers which are local."""
+        """Start all remote servers and one local server."""
         for user, host, port in self.server_addresses:
-            if host == self.myaddress:
-                logger.info("Starting local server %s %s", host, port)
-                proc = multiprocessing.Process(
-                    target=lambda: cmdserver.start_server(port=port, config=self._config))
-                # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
-                proc.daemon = True
-                proc.start()
-            else:
                 remoteHost = "%s@%s" % (user, host)
-                command = "cd ~/goaway; find . -name '*.pyc' -delete ; DEBUG=true goaway/cmdserver.py %s" % (self._config.remote_path)
+                command = ("cd ~/goaway;" +
+                        "find . -name '*.pyc' -delete ;" +
+                        "DEBUG=true goaway/cmdserver.py %s" % (self._config.remote_path))
                 logger.debug("Starting server:%s remoteHost with command:%s" % (remoteHost, command))
                 ## subprocess.call blocks, while subprocces.Popen doesn't block.
-                sshPopen = subprocess.Popen(["ssh", remoteHost, command], shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
+                sshPopen = subprocess.Popen(["ssh", remoteHost, command],
+                        shell = False, stdout= subprocess.PIPE, stderr = subprocess.PIPE)
+        self._start_local_server()
+
+    def _start_local_server(self):
+        user, host, port = self._config.local_server
+        logger.info("Starting local server %s:%s", host, port)
+        proc = multiprocessing.Process(
+            target=lambda: cmdserver.start_server(port=port, config=self._config))
+        # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
+        proc.daemon = True
+        proc.start()
 
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
-            user, host, port = self.server_addresses[server_id]
-            if host != self.myaddress:
-                self._sync_server(server_id)
+            self._sync_server(server_id)
 
     def _sync_server(self, server_id):
         user, host, port = self.server_addresses[server_id]

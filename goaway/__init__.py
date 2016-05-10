@@ -37,7 +37,7 @@ def init(config_path):
     logger.info("starting master ...")
     ##TODO AP: initialize in a weak objecthandle contsructor
     globalvars.weakDataStoreHandle = WeakDataStoreHandle()
-    globalvars.rc = RemoteControl(config_path, "localhost")
+    globalvars.rc = RemoteControl(config_path)
     logger.debug("started spawner and remotes.")
     ## Sets the hook for interrupts. This needs to happen after forking.
     ## If it happens before, every command server will execute the ctrl-c hook
