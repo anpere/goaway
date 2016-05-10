@@ -1,3 +1,2 @@
 .git
-server.log*
-server.debug
+server*
