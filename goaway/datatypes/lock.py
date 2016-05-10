@@ -5,7 +5,7 @@ import thread
 import uuid
 import logging
 ## import globalvars
-import goaway.rpc
+import goaway.rpc as rpc
 
 logger = logging.getLogger(__name__)
 
