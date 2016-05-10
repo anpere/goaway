@@ -288,6 +288,5 @@ if __name__ == "__main__":
     globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
     # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
     debug("strict data store made")
-    with open(config_path, "r") as stream:
-        config = ClusterConfig(yaml.load(stream))
+    config = ClusterConfig(config_path)
     start_server(9060, config)
