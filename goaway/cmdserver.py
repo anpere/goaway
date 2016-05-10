@@ -21,16 +21,11 @@ import types
 import uuid
 from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
-debug("system imports okay")
 from datatypes.lockingcontainer import LockingContainer
-debug("locking imports good")
 
 from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
-debug("globalvars imports good")
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
-debug("strictcentralizeddatastorehandle imports good")
 import goaway.objectconstructors as objectconstructors
-debug("imports successfully")
 
 app = Flask(__name__)
 
