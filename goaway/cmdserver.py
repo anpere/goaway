@@ -277,6 +277,7 @@ def getModules():
 def debug(message):
     server_debug.write(message+"\n")
     server_debug.flush()
+
 if __name__ == "__main__":
     debug("main is running")
     app.logger.debug("main is running")
