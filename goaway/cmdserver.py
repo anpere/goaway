@@ -44,7 +44,7 @@ locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 
 # Keep track of which modules have been imported.
 # (Container of) dict from module name to module if imported.
-# imported_modules_locked = LockingContainer({})
+imported_modules_locked = LockingContainer({})
 
 
 @app.route("/", methods=["GET"])
