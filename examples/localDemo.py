@@ -13,10 +13,6 @@ def sqrt(x):
 def add(a, b):
     return a + b
 if __name__ == "__main__":
-    print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
-    run = raw_input("Continue [y/N]")
-    if run != 'y':
-        sys.exit(0)
     config_path = os.path.join(os.path.dirname(__file__), "local.yaml")
     num_of_servers = 3
 

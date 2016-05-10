@@ -1,8 +1,4 @@
 import sys
-print "Goaway assumes you have defined $GOAWAYPATH to the path of the repo, and if not it will probably rsync things you don't want rsynced to a remote server"
-run = raw_input("Continue [y/N]")
-if run != 'y':
-    sys.exit(0)
 import time
 
 import os
