@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 
 max_tries = 3
 
+# How long to wait for each server to start.
+SERVER_START_TIMEOUT = 3.0
+
 
 class RemoteControl(object):
     """Handle on remote goaway servers."""
@@ -35,9 +38,9 @@ class RemoteControl(object):
         self._sync_servers()
         self._start_servers()
 
-        serversAlive = self.check_servers()
+        serversAlive = self.wait_for_servers(SERVER_START_TIMEOUT)
         if not serversAlive:
-            raise RuntimeError("Servers could not be started")
+            raise RuntimeError("servers could not be started")
 
     def _start_servers(self):
         """Start any servers which are local."""
@@ -81,20 +84,24 @@ class RemoteControl(object):
     def server_count(self):
         return len(self.server_addresses)
 
-    def check_servers(self):
-        allAlive = True
+    def wait_for_servers(self, timeout):
+        """Wait for all servers to become alive.
+        Args:
+            timeout: How long to wait for _each_ server before giving up.
+        Returns: True if all servers are alive.
+                 False if any server did not respond in time.
+        """
         for user, host, port in self.server_addresses:
-            allAlive &= self._check_server(user, host, port)
-        return allAlive
+            if not self.wait_for_server(user, host, port, timeout):
+                logging.warn("could not start server %s:%s:%s", user, host, port)
+                return False
+        return True
 
-
-    ''' returns True if and only if the target server responds '''
-    def _check_server(self, user, host, port):
-        # Try each server a few times.
-        for _ in xrange(max_tries):
+    def wait_for_server(self, user, host, port, timeout):
+        time_start = time.time()
+        while time.time() - time_start < timeout:
             if CmdClient(user, host, port).check():
                 return True
-            time.sleep(.5)
         return False
 
     def kill_servers(self):

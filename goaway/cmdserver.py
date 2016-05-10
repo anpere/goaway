@@ -44,12 +44,13 @@ imported_modules_locked = LockingContainer({})
 
 @app.route("/", methods=["GET"])
 def hello():
-    return jsonify({"ok": "ok", "hello": "friend, 8"})
+    return jsonify({"ok": "ok"})
 
 
 @app.route("/check", methods=["GET"])
 def check():
     """Check that a server is responding."""
+    logging.debug("checked")
     return jsonify({"ok": "ok"})
 
 @app.route("/kill", methods=["POST"])

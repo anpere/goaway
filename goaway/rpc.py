@@ -21,11 +21,12 @@ def rpc(http_method, url, payload):
             res = requests.post(url, json=payload)
         else:
             raise RuntimeError("Unsupported HTTP type {}".format(http_method))
-    except Exception as ex:
+    except requests.exceptions.RequestException as ex:
         # TODO retry
         # TODO catch a less broad exception.
         raise RpcException("Could not connect to RPC server.", ex)
     if res.status_code != 200:
+        # save_error_html(res.text)
         raise RpcException("RPC server returned code {}".format(res.status_code))
     resj = res.json()
     if "error" in resj:
@@ -38,3 +39,10 @@ def master_url(url_subpath):
     # The data master is the first server listed in the config.
     master_server = globalvars.config.servers[0]
     return "http://{}:{}/{}".format(master_server.host, master_server.port, url_subpath)
+
+def save_error_html(html):
+    """Hacky debugging thing."""
+    LAST_ERROR_PATH = "./error.html"
+    os.unlink(LAST_ERROR_PATH)
+    with open(LAST_ERROR_PATH, "w") as f:
+        f.write(res.text)

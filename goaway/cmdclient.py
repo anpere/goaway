@@ -37,10 +37,12 @@ class CmdClient(object):
         """
         try:
             res = requests.post(self._url("kill"))
-            return True
+            if res.status_code == 200:
+                return True
+            else:
+                return False
         except requests.exceptions.RequestException as ex:
-            return False
-        if res.status_code != 200:
+            logging.warn("server not killed %s", ex)
             return False
 
     def run_remote(self, file_name, function_name, *args, **kwargs):
