@@ -68,7 +68,7 @@ class RemoteControl(object):
         for file_paths in self.file_paths:
             src_path, trg_path = file_paths.split(" ")
             print src_path
-            if "$GOAWAYPATH" in src_path:
+            if "$GOAWAYPATH" in src_path or  "$GOAWAYPATH" in trg_path:
                 try:
                     print os.environ["GOAWAYPATH"]
                 except KeyError:
