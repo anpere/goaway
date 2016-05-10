@@ -38,7 +38,8 @@ class RemoteControl(object):
         self._start_servers()
 
         serversAlive = self.check_servers()
-        logger.debug("servers alive after started? %s" % (serversAlive))
+        if not serversAlive:
+            raise RuntimeError("Servers could not be started")
 
     def _start_servers(self):
         """Start any servers which are local."""
