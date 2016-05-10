@@ -16,10 +16,9 @@ l = goaway.Lock("l")
 s = goaway.StrictCentralized("s")
 
 def increment_and_copy():
-    l.acquire()
-    s.num += 1
-    s.num2 = s.num
-    l.release()
+    with l:
+        s.num += 1
+        s.num2 = s.num
 
 if __name__ == "__main__":
     config_path = common.select_config()
