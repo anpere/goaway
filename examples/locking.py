@@ -27,11 +27,12 @@ if __name__ == "__main__":
     # Initialize GoAway.
     goaway.init(config_path)
     s.num = 0
+    goal = 100
 
-    for i in range(10):
+    for i in range(goal):
         goaway.goaway(increment_and_copy)
 
-    while s.num < 10:
+    while s.num < goal:
         sleep(.05)
 
     r1 = s.num
@@ -40,5 +41,5 @@ if __name__ == "__main__":
     print "Result num", r1
     print "Result num2", r2
 
-    assert(r1 == 10)
-    assert(r2 == 10)
+    assert(r1 == goal)
+    assert(r2 == goal)
