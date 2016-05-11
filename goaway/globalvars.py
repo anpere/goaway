@@ -34,6 +34,7 @@ proc_uuid = uuid.uuid4()
 datastorehandles = {}
 STRICT_CENTRALIZED_KIND= "strict_centralized"
 WEAK_KIND = "weak_kind"
+RELEASE_KIND = "release_kind"
 ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND]
 
 def get_data_store(kind):
