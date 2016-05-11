@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # Initialize GoAway.
     goaway.init(config_path)
     s.num = 0
-    goal = 100
+    goal = 10
 
     for i in range(goal):
         goaway.goaway(increment_and_copy)
