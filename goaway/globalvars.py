@@ -36,7 +36,7 @@ STRICT_CENTRALIZED_KIND= "strict_centralized_kind"
 LIN_FAST_READ_KIND = "lin_fast_read_kind"
 WEAK_KIND = "weak_kind"
 RELEASE_KIND = "release_kind"
-ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_FAST_READ_KIND]
+ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_FAST_READ_KIND, RELEASE_KIND]
 
 def get_data_store(kind):
     """Get a data store handle by its kind.
@@ -72,6 +72,9 @@ def init_data_stores():
         elif kind == LIN_FAST_READ_KIND:
             from goaway.datastorehandle.linfastread import LinFastReadDataStoreHandle
             datastorehandles[kind] = LinFastReadDataStoreHandle()
+        elif kind == RELEASE_KIND:
+            from goaway.datastorehandle.updateonrelease import UpdateOnReleaseDataStoreHandle
+            datastorehandles[kind] = UpdateOnReleaseDataStoreHandle()
         else:
             raise RuntimeError("unrecognized kind", kind)
 

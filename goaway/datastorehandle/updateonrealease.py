@@ -1,7 +1,11 @@
 class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
-    """ Represents a datastore
-        Ensures that accesses to the objects contained by this datastore
-        satisfy the properties of release
+    """
+    Represents an datastore that ensures accesses to objects in the data store
+    satisfy the properties of release consistency
+    Each object has a lock which is used to cooridinate with copies
+    of that object on different machines.
+    Changes made to the object are propogated when that object's lock has
+    been released
     """
     Operation = collections.namedtuple("Operation", ["name", "field", "value"])
     def __init__(self):
@@ -12,7 +16,11 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
 
     def acquire(self, name):
         ## TODO: delete the operations buffer?
-        self.locks[name].acquire()
+        try:
+            self.locks[name].acquire
+        except KeyError:
+            self.locks[name] = Lock(name)
+            self.buffers[name] = []
 
     def release(self, name):
         ## 0. Get operations buffer
@@ -31,10 +39,6 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
         ## 3. Release the lock
         self.locks[name].release()
 
-    def make_objet(self, name):
-        self.locks[name] = Lock(name)
-        self.buffers[name] = []
-
     def get(self, name, field):
         return self.data[name][field]
 
@@ -42,9 +46,13 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
         ## write to that object's local cache
         self.data[name][field] = value
         ## log the operation to that object's operation buffer
-        object_buffer = self.buffer[name]
-        object_buffer.append(Operation(name, field, value))
-        self.buffer[name] = object_buffer
+        try:
+            object_buffer = self.buffer[name]
+            object_buffer.append(Operation(name, field, value))
+            self.buffer[name] = object_buffer
+        except KeyError:
+            self.buffer[name] = []
+            self.buffer[name].append(Operation(name, field, value))
 
     def _server_url(self, server_address, url_subpath):
         return "http://{}:{}/{}".format(server_address.host, server_address.port, url_subpath)
