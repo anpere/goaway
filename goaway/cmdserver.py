@@ -158,6 +158,9 @@ def data_set():
         store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
         with store_lock:
             store.set(name, field, value)
+    elif consistency == "weak":
+        store = globalvars.get_data_store(globalvars.WEAK_KIND)
+        store.receive_set(name, field, value)
     res = {"ok": "ok"}
     return jsonify(res)
 

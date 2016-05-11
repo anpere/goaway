@@ -1,4 +1,4 @@
-from objecthandle import ObjectHandle
+from objecthandle import ObjectHandle, NAME_ATTR
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
 import globalvars
 import logging
@@ -16,3 +16,10 @@ class UpdateOnRelease(ObjectHandle):
 class LinFastRead(ObjectHandle):
     def __init__(self, name):
         ObjectHandle.__init__(self, globalvars.LIN_FAST_READ_KIND, name)
+
+class Weak(ObjectHandle):
+    def __init__(self, name):
+        ObjectHandle.__init__(self, globalvars.WEAK_KIND, name)
+
+    def sync(self):
+        globalvars.get_data_store(globalvars.WEAK_KIND).sync(getattr(self, NAME_ATTR))

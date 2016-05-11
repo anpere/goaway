@@ -1,5 +1,10 @@
 import threading
+import logging
+from time import sleep
 from datastorehandle import DataStoreHandle
+from goaway import globalvars, rpc
+
+logger = logging.getLogger(__name__)
 
 class WeakDataStoreHandle(DataStoreHandle):
     def __init__(self):
@@ -8,17 +13,18 @@ class WeakDataStoreHandle(DataStoreHandle):
 
         # Number of pending RPCs
         self.outgoing_lock = threading.RLock()
-        self.outgoing = 0
+        self.outgoing = {} # key: object name; value: number of outgoing
+        self.syncing = {} # key: object name; value: boolean if syncing
 
-    def _rpc(self, server, target, payload):
-        if "value" in resp:
-            return resp["value"]
-
-    def receive_create(self, name):
-        """ Receive a propagated create from the master """
+    def _reg_name(self, name):
         with self.data_lock:
-            if not name in data:
+            if not name in self.data:
                 self.data[name] = {}
+        with self.outgoing_lock:
+            if not name in self.outgoing:
+                self.outgoing[name] = 0
+        if not name in self.syncing:
+            self.syncing[name] = False
 
     def get(self, name, field):
         """ Client requests to get (no need to do remote action) """
@@ -30,23 +36,23 @@ class WeakDataStoreHandle(DataStoreHandle):
 
     def set(self, name, field, value):
         """ Client requests to set """
+        self._reg_name(name)
         with self.data_lock:
-            try:
-                self.data[name][field] = value
-                self._set_remote(name, field, value)
-            except KeyError:
-                raise AttributeError("Object<{}> has no such attribute '{}'".format(name, field))
+            self.data[name][field] = value
+        self._set_remote(name, field, value)
         return
 
     def _set_remote(self, name, field, value):
         """ Propagate the set to all servers """
         for server in globalvars.config.all_other_servers:
             threading.Thread(
-                    target=lambda:self._set_remote_single(server, name, field, value)).start()
+                    target=self._set_remote_single, args=(server, name, field, value)).start()
 
     def _set_remote_single(self, server, name, field, value):
+        while self.syncing[name]:
+            sleep(0.005)
         with self.outgoing_lock:
-            self.outgoing += 1
+            self.outgoing[name] += 1
         url = "http://{}:{}/data/set".format(server.host, server.port)
         payload = {
                 "consistency": "weak",
@@ -56,22 +62,20 @@ class WeakDataStoreHandle(DataStoreHandle):
         }
         rpc.rpc("POST", url, payload)
         with self.outgoing_lock:
-            self.outgoing -= 1
+            self.outgoing[name] -= 1
 
     def receive_set(self, name, field, value):
         """ Receive a propagated set from another server """
-        # WHAT IS GOING ON??
-        # for now, just accept everything
-        # TODO what is going on.
-
+        self._reg_name(name)
         with self.data_lock:
-            try:
-                self.data[name][field] = value
-            except KeyError:
-                self.data[name] = {field: value}
+            self.data[name][field] = value
 
-
-    # TODO need to flush, how does that work?
-    # What goes here vs in objecthandle?
-    # def start_flush(self, name)
-    # def end_flush(self, name)
+    def sync(self, name):
+        self._reg_name(name)
+        self.syncing[name] = True
+        while True:
+            with self.outgoing_lock:
+                if self.outgoing[name] == 0:
+                    self.syncing[name] = False
+                    return
+            sleep(0.005)
