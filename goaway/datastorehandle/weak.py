@@ -1,7 +1,7 @@
 import threading
 from datastorehandle import DataStoreHandle
 
-class WeakCentralizedDataStoreHandle(DataStoreHandle):
+class WeakDataStoreHandle(DataStoreHandle):
     def __init__(self):
         self.data = {}
         self.data_lock = threading.RLock()
@@ -42,11 +42,13 @@ class WeakCentralizedDataStoreHandle(DataStoreHandle):
                 self.data[name][field] = value
                 self._set_remote(name, field, value)
             except KeyError:
+                raise AttributeError("Object<{}> has no such attribute '{}'".format(name, field))
+        return
 
     def _set_remote(self, name, field, value):
         """ Propagate the set to all servers """
-        pass
+        pass # TODO
 
     def receive_set(self, name, field, value):
         """ Receive a propagated set from another server """
-        pass
+        pass # TODO
