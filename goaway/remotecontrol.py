@@ -1,18 +1,20 @@
 import random
+import sys
 import os
 import multiprocessing
 import subprocess
 import time
 import signal
+import pickle
 import logging
+import threading
 
 import cmdserver
 from cmdclient import CmdClient
 from config import ClusterConfig
 import globalvars
-import threading
-import pickle
-import sys
+import localip
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +25,20 @@ SERVER_START_TIMEOUT = 3.0
 
 
 class RemoteControl(object):
-    """Handle on remote goaway servers."""
+    """Handle on remote goaway servers.
+    Only instantiated on the spawner.
+    """
     def __init__(self, config_path):
         self._config = ClusterConfig(config_path)
         globalvars.config = self._config
         logging.debug("using local  config path: %s", self._config.local_path)
         logging.debug("using remote config path: %s", self._config.remote_path)
+
+        if self._config.spawner_server[1] not in (localip.ipv4_addresses() + localip.ipv6_addresses()):
+            print "Spawner server is not one of your IPs."
+            print "spawner ip from config: {}".format(self._config.spawner_server[1])
+            print "local ips: {}".format(localip.ipv4_addresses())
+            raise RuntimeError("spawner_server ip is not one of your ips", self._config.spawner_server[1])
 
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
