@@ -67,11 +67,11 @@ class RemoteControl(object):
     def _start_local_server(self):
         user, host, port = self._config.spawner_server
         logger.info("Starting local server %s:%s", host, port)
-        proc = multiprocessing.Process(
+        thread = threading.Thread(
             target=lambda: cmdserver.start_server(port=port, config=self._config))
         # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
-        proc.daemon = True
-        proc.start()
+        thread.daemon = True
+        thread.start()
 
     def _sync_servers(self):
         for server_id in range(len(self.server_addresses)):
