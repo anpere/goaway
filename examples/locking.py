@@ -31,7 +31,7 @@ if __name__ == "__main__":
     for i in range(goal):
         goaway.goaway(increment_and_copy)
 
-    while s.num < goal:
+    while s.num2 < goal:
         sleep(.05)
 
     r1 = s.num
