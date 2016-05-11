@@ -290,6 +290,9 @@ if __name__ == "__main__":
     # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
     debug("strict data store made")
     config = ClusterConfig(config_path)
+    config.add_spawner()
+    print config.servers
+    print config.spawner_server
     debug(config_path)
     debug("starting server!")
     start_server(9060, config)

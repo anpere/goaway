@@ -18,8 +18,14 @@ class ClusterConfig(object):
 
         self.local_path = config_path
         self.remote_path = self.data["remote_config_path"]
-        self.local_server = _split_server_address(self.data["spawner_server"])
-        self.servers = map(_split_server_address, self.data["remote_servers"])
+        self.servers = map(_split_server_address, self.data["servers"])
+        self.spawner_server = map(_split_server_address, self.data["spawner_server"])
+
+    def add_spawner(self):
+        """
+        Adds the address of the spawner to the list of servers-addresses
+        """
+        self.servers += self.spawner_server
 
 
 ServerAddress = collections.namedtuple("ServerAddress", ["user", "host", "port"])
