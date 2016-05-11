@@ -111,7 +111,11 @@ def data_create():
     if consistency=="strict":
         with store_lock:
             if name not in store:
-                store[name] = objectconstructors.StrictCentralized(name)
+                globalvars.strictCentralizedDataStoreHandle.create(name)
+    elif consistency=="eventual":
+        globalvars.eventualDataStoreHandle.create(name)
+
+
 
     res = {"ok": "ok"}
     return jsonify(res)
@@ -129,15 +133,7 @@ def data_get():
     error = "ok"
     if consistency=="strict":
         with store_lock:
-            if name in store:
-                try:
-                    value = store[name]
-                except KeyError:
-                    app.logger.warning("Key error for name: %s , field: %s" % (name, field))
-                    error = "Object<{}> has no such attribute '{}'".format(object_name, key)
-            else:
-                    error = "NO_VAL_FOR_KEY"
-
+            value, error = globalvars.strictCentralizedDataStoreHandle.get(name, field)
     res = { "value" : value,
           "error" : error,
           }
@@ -157,12 +153,7 @@ def data_set():
 
     if consistency=="strict":
         with store_lock:
-            if name not in store:
-                app.logger.warning("%s not in store, putting" % (name))
-                store[name] = {}
-            app.logger.info("setting %s.%s to %s" % (name, field, value))
-            store[name][field] = value
-
+            globalvars.strictCentralizedDataStoreHandle.set(name, field, value)
     res = {"ok": "ok"}
     return jsonify(res)
 
