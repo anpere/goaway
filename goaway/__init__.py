@@ -11,7 +11,7 @@ logsetup.setup()
 
 import rpc
 from remotecontrol import RemoteControl
-from objectconstructors import StrictCentralized, LinReadFast
+from objectconstructors import *
 from datastorehandle.weak import WeakDataStoreHandle
 from datatypes import *
 from datatypes.lock import Lock

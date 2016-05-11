@@ -189,6 +189,28 @@ def release_lock():
     res = {"ok": "false"}
     return jsonify(res)
 
+@app.route("/serreadfast/acquire", methods=["POST"])
+def serreadfast_acquire():
+    name = request.json["name"]
+    field = request.json["field"]
+    store = globalvars.get_data_store(globalvars.LIN_READ_FAST_KIND)
+    acquired = store._on_acquire(name, field)
+    if acquired:
+        res = {"success": True}
+    else:
+        res = {"success": False}
+    return jsonify(res)
+
+@app.route("/serreadfast/update", methods=["POST"])
+def serreadfast_update():
+    name = request.json["name"]
+    field = request.json["field"]
+    value = request.json["value"]
+    store = globalvars.get_data_store(globalvars.LIN_READ_FAST_KIND)
+    store._on_update(name, field, value)
+    res = {"success": True}
+    return jsonify(res)
+
 def _run_in_thread(function, *args, **kwargs):
     """Run a function in a daemon thread."""
     thread = threading.Thread(target=function, args=args, kwargs=kwargs)
