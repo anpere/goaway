@@ -6,20 +6,13 @@ class WeakDataStoreHandle(DataStoreHandle):
         self.data = {}
         self.data_lock = threading.RLock()
 
-    def create(self, name):
-        """ Client requests to create an object """
-        with self.data_lock:
-            if not name in data:
-                self.data[name] = {}
-                self._create_remote(name)
+        # Number of pending RPCs
+        self.outgoing_lock = threading.RLock()
+        self.outgoing = 0
 
-    def _create_remote(self, name):
-        """ Propagate the create to the master """
-        payload = {
-                "consistency": "weak",
-                "name": name
-        }
-        threading.Thread(lambda:rpc.rpc("POST", rpc.master_url("data/create"), payload)).start()
+    def _rpc(self, server, target, payload):
+        if "value" in resp:
+            return resp["value"]
 
     def receive_create(self, name):
         """ Receive a propagated create from the master """
@@ -47,8 +40,38 @@ class WeakDataStoreHandle(DataStoreHandle):
 
     def _set_remote(self, name, field, value):
         """ Propagate the set to all servers """
-        pass # TODO
+        for server in globalvars.config.all_other_servers:
+            threading.Thread(
+                    target=lambda:self._set_remote_single(server, name, field, value)).start()
+
+    def _set_remote_single(self, server, name, field, value):
+        with self.outgoing_lock:
+            self.outgoing += 1
+        url = "http://{}:{}/data/set".format(server.host, server.port)
+        payload = {
+                "consistency": "weak",
+                "name": name,
+                "field": field,
+                "value": value
+        }
+        rpc.rpc("POST", url, payload)
+        with self.outgoing_lock:
+            self.outgoing -= 1
 
     def receive_set(self, name, field, value):
         """ Receive a propagated set from another server """
-        pass # TODO
+        # WHAT IS GOING ON??
+        # for now, just accept everything
+        # TODO what is going on.
+
+        with self.data_lock:
+            try:
+                self.data[name][field] = value
+            except KeyError:
+                self.data[name] = {field: value}
+
+
+    # TODO need to flush, how does that work?
+    # What goes here vs in objecthandle?
+    # def start_flush(self, name)
+    # def end_flush(self, name)
