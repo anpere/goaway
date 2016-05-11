@@ -271,7 +271,9 @@ def getModules():
 
 
 if __name__ == "__main__":
-    setup_logging()
+    # TODO this should be passed in on cmdline.
+    port = 9060
+    setup_logging(port)
 
     debug("main is running")
     app.logger.debug("main is running")
@@ -285,4 +287,4 @@ if __name__ == "__main__":
     globalvars.init_data_stores()
 
     debug("starting server!")
-    start_server(9060, logging_has_been_setup=True)
+    start_server(port, logging_has_been_setup=True)
