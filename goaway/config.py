@@ -18,7 +18,7 @@ class ClusterConfig(object):
 
         self.local_path = config_path
         self.remote_path = self.data["remote_config_path"]
-        self.spawner_server = _split_server_address(self.data["spawner_server"][0])
+        self.spawner_server = _split_server_address(self.data["spawner_server"])
         self.servers = map(_split_server_address, self.data["remote_servers"])
 
     def add_spawner(self):
