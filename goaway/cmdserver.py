@@ -272,16 +272,15 @@ def getModules():
 
 
 if __name__ == "__main__":
-    # Show a separator.
-    app.logger.info("Starting server..." + "\n" * 5 + "-" * 20 + "\n" * 5)
+    """Usage: cmdserver.py <config_path> <port>"""
+    assert len(sys.argv) == 3
+    config_path = sys.argv[1]
+    port = int(sys.argv[2])
 
-    # TODO this should be passed in on cmdline.
-    port = 9060
     setup_logging(port)
 
     debug("main is running")
-    logging.debug("main is running")
-    assert len(sys.argv) == 2
+    app.logger.debug("main is running")
 
     config_path = sys.argv[1]
     app.logger.debug("Configpath :%s" % (config_path))
