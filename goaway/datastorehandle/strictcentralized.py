@@ -33,8 +33,6 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
         # Decide whether we are the data master for this store.
         self.is_master = self.master_server_address.host in (localip.ipv4_addresses() + localip.ipv6_addresses())
 
-        logger.warn("is master %s", self.is_master)
-
     def create(self, name):
         """Creates a strict object in the datastore.
         Args:
