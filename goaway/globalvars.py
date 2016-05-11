@@ -20,6 +20,7 @@ rc = None
 
 # Datastore handlers.
 strictCentralizedDataStoreHandle = None
+eventualDataStoreHandle = None
 weakDataStoreHandle = None
 
 # Unique identifier for this process

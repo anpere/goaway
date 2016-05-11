@@ -282,8 +282,11 @@ if __name__ == "__main__":
     debug("strict data store made")
     config = ClusterConfig(config_path)
     config.add_spawner()
-    print config.servers
-    print config.spawner_server
     debug(config_path)
     debug("starting server!")
+    ## initialize globals: config and datastores
+    globalvars.config = config
+    # globalvars.eventualDataStoreHandle =
+    globalvars.strictCentralizedDataStoreHandle = StrictCentralized()
+    # globalvars.weakDataStoreHandle =
     start_server(9060, config)
