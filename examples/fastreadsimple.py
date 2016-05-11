@@ -2,7 +2,7 @@
 A very simple test of GoAway's fast read storage.
 
 Owner: mlsteele
-Status: Doesn't work.
+Status: Works.
 """
 import sys
 import os

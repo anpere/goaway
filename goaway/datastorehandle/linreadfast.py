@@ -3,6 +3,7 @@ import requests
 import threading
 import collections
 import time
+import random
 
 import goaway.globalvars as globalvars
 import goaway.rpc as rpc
@@ -59,7 +60,10 @@ class LinReadFastDataStoreHandle(DataStoreHandle):
            field: field of the object in datastore
            value: value to set the field of object
         """
-        server_addresses = globalvars.config.all_servers
+        # Go through in order with the spawner last.
+        # This is because the first server will usually be the lock contention point.
+        config = globalvars.config
+        server_addresses = config.non_spawner_servers + [globalvars.config.spawner_server]
 
         # Lock the object on all servers.
         for addr in server_addresses:
@@ -81,12 +85,12 @@ class LinReadFastDataStoreHandle(DataStoreHandle):
                 "name": name,
                 "field": field,
             }
-            resj = rpc.rpc("POST", self._server_url(server_address, "/serreadfast/acquire"), payload)
+            resj = rpc.rpc("POST", self._server_url(server_address, "serreadfast/acquire"), payload)
 
             if resj.get("success") == True:
                 return
 
-            time.sleep(.1)
+            time.sleep(.02 + random.random() * .08)
 
 
     def _send_update_sync(self, server_address, name, field, value):
@@ -99,7 +103,7 @@ class LinReadFastDataStoreHandle(DataStoreHandle):
             "field": field,
             "value": value,
         }
-        resj = rpc.rpc("POST", self._server_url(server_address, "/serreadfast/update"), payload)
+        resj = rpc.rpc("POST", self._server_url(server_address, "serreadfast/update"), payload)
         assert resj.get("success") == True
 
     def _on_acquire(self, name, field):

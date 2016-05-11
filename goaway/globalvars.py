@@ -33,6 +33,7 @@ proc_uuid = uuid.uuid4()
 # Map from kind -> datastore instance.
 datastorehandles = {}
 STRICT_CENTRALIZED_KIND= "strict_centralized_kind"
+LIN_READ_FAST_KIND = "lin_read_fast_kind"
 WEAK_KIND = "weak_kind"
 RELEASE_KIND = "release_kind"
 ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_READ_FAST_KIND]

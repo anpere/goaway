@@ -132,16 +132,16 @@ class RemoteControl(object):
         # Ignore the result of whether the server received the command.
         return
 
-    def run_on_server(self, server_id, file_name, function_name, *args, **kwargs):
-        user, host, port = self.server_addresses[server_id]
+    def run_on_server(self, server_address, file_name, function_name, *args, **kwargs):
+        user, host, port = server_address
         logger.debug("running %s(%s) on %s:%s" % (function_name, args, host, port))
         result = CmdClient(user, host, port).run_remote(file_name, function_name, *args, **kwargs)
         return
 
     def goaway(self, file_name, function_name, *args, **kwargs):
-        server_id = self.random_server_id()
-        self.run_on_server(server_id, file_name, function_name, *args, **kwargs)
+        server_address = self.random_server_address()
+        self.run_on_server(server_address, file_name, function_name, *args, **kwargs)
 
-
-    def random_server_id(self):
-        return random.randrange(0, len(self.server_addresses))
+    def random_server_address(self):
+        i = random.randrange(0, len(globalvars.config.all_servers))
+        return globalvars.config.all_servers[i]

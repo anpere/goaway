@@ -4,7 +4,7 @@ A bunch of goaway threads issue many reads and a few writes.
 They aggregate how long each one took.
 
 Owner: mlsteele
-Status: Doesn't work.
+Status: Works.
 """
 import sys
 import os
@@ -15,8 +15,9 @@ import goaway
 import common
 
 # How many reads and writes each worker issues.
-NREADS = 100
+NREADS = 1000
 NWRITES = 10
+NWORKERS = 5
 
 # Lock to guard stats.
 lock = goaway.Lock("lock")
@@ -55,12 +56,22 @@ if __name__ == "__main__":
     # Initialize GoAway.
     goaway.init(config_path)
 
+    stats.read_time = 0
+    stats.read_count = 0
+    stats.write_time = 0
+    stats.write_count = 0
     stats.done = 0
 
     for n in range(NWORKERS):
         goaway.goaway(worker, n)
 
     while stats.done < NWORKERS:
-        sleep(.05)
+        time.sleep(.05)
 
-    print "results", stats
+    print "workers done", stats.done
+    print "read count", stats.read_count
+    if stats.read_count > 0:
+        print "avg read time", stats.read_time / stats.read_count
+    print "write count", stats.write_count
+    if stats.write_count > 0:
+        print "avg write time", stats.write_time / stats.write_count

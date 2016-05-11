@@ -28,6 +28,7 @@ class ClusterConfig(object):
 
         # List of non-spawner servers.
         self.servers = map(_split_server_address, self.data["remote_servers"])
+        self.non_spawner_servers = self.servers
         # List of all server addresses, with the spawner first.
         self.all_servers = [self.spawner_server] + self.servers
         # List of all server addresses which are not on this machine.
