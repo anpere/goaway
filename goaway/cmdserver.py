@@ -218,16 +218,17 @@ def setup_logging(port):
     werkzeug_logger.setLevel(logging.ERROR)
 
 
-def start_server(port):
+def start_server(port, logging_has_been_setup=False):
     """Start the cmd server. This method is blocking.
     Args:
         port: Port to run on.
     """
+    if not logging_has_been_setup:
+        setup_logging(port)
+
     # Re-initialize the uuid, in case this was a fork.
     globalvars.proc_uuid = uuid.uuid4()
     debugOn = os.environ.get("DEBUG", False) == "true"
-
-    setup_logging(port)
 
     ## TODO
     ##for module in config.data["modules"]:
@@ -270,6 +271,8 @@ def getModules():
 
 
 if __name__ == "__main__":
+    setup_logging()
+
     debug("main is running")
     app.logger.debug("main is running")
     assert len(sys.argv) == 2
@@ -282,4 +285,4 @@ if __name__ == "__main__":
     globalvars.init_data_stores()
 
     debug("starting server!")
-    start_server(9060)
+    start_server(9060, logging_has_been_setup=True)
