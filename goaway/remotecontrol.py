@@ -55,7 +55,7 @@ class RemoteControl(object):
         self._start_local_server()
 
     def _start_local_server(self):
-        user, host, port = self._config.local_server
+        user, host, port = self._config.spawner_server
         logger.info("Starting local server %s:%s", host, port)
         proc = multiprocessing.Process(
             target=lambda: cmdserver.start_server(port=port, config=self._config))
