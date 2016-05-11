@@ -1,7 +1,11 @@
 import requests
+import logging
+import os
 
 import globalvars
 from common import RpcException
+
+logger = logging.getLogger(__name__)
 
 def rpc(http_method, url, payload):
     """Issue an rpc.
@@ -34,15 +38,12 @@ def rpc(http_method, url, payload):
             raise RpcException(resj["error"])
     return resj
 
-def master_url(url_subpath):
-    """Create a URL for contacting the data master."""
-    # The data master is the first server listed in the config.
-    master_server = globalvars.config.servers[0]
-    return "http://{}:{}/{}".format(master_server.host, master_server.port, url_subpath)
-
 def save_error_html(html):
     """Hacky debugging thing."""
     LAST_ERROR_PATH = "./error.html"
-    os.unlink(LAST_ERROR_PATH)
+    try:
+        os.remove(LAST_ERROR_PATH)
+    except OSError:
+        pass
     with open(LAST_ERROR_PATH, "w") as f:
-        f.write(res.text)
+        f.write(html)

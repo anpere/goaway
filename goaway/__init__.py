@@ -35,9 +35,8 @@ def init(config_path):
        TODO: dsm: DataStore object to be shared across machines
     """
     logger.info("starting master ...")
-    ##TODO AP: initialize in a weak objecthandle contsructor
-    globalvars.weakDataStoreHandle = WeakDataStoreHandle()
     globalvars.rc = RemoteControl(config_path)
+    globalvars.init_data_stores()
     logger.debug("started spawner and remotes.")
     ## Sets the hook for interrupts. This needs to happen after forking.
     ## If it happens before, every command server will execute the ctrl-c hook

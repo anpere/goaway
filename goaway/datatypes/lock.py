@@ -29,7 +29,7 @@ class Lock(object):
         data = {"uuid": self.get_uuid(),
                 "name": self.name}
         while True:
-            resj = rpc.rpc("POST", rpc.master_url("lock/acquire"), data)
+            resj = rpc.rpc("POST", self._master_url("lock/acquire"), data)
             if resj["ok"] == "ok":
                 return
 
@@ -43,7 +43,7 @@ class Lock(object):
         """ sends release notice """
         data = {"uuid": self.get_uuid(),
                 "name": self.name}
-        resj = rpc.rpc("POST", rpc.master_url("lock/release"), data)
+        resj = rpc.rpc("POST", self._master_url("lock/release"), data)
 
     def __enter__(self):
         self.acquire()
@@ -52,3 +52,9 @@ class Lock(object):
         self.release()
         # Propagate exceptions.
         return False
+
+    def _master_url(self, url_subpath):
+        """Create a URL for contacting the data master."""
+        # The lock master is the first server listed in the config.
+        master_server = globalvars.config.servers[0]
+        return "http://{}:{}/{}".format(master_server.host, master_server.port, url_subpath)

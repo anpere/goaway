@@ -1,8 +1,10 @@
 import logging
 
+import goaway.globalvars as globalvars
+
 logger = logging.getLogger(__name__)
 
-DATA_STORE_HANDLE_ATTR = "__store"
+DATA_STORE_HANDLE_KIND_ATTR = "__store"
 NAME_ATTR = "__name"
 
 class ObjectHandle(object):
@@ -15,22 +17,25 @@ class ObjectHandle(object):
         accumulators = goaway.StrictCentralized()
         accumulators.flowers = 0
         accumulators.trees = 10
+
+    Args:
+        dataStoreName: ???
+        name: Name of the object, to identify it its store.
     """
-    def __init__(self, dataStoreHandle, name):
+    def __init__(self, data_store_kind, name):
         """
         Args:
             store: The DataStoreHandle to use to manage state.
             name: The unique identifier of the object.
         """
-        # logger.debug("datastore object:%s" % (dataStoreHandle.__hash__))
-        self.__dict__[DATA_STORE_HANDLE_ATTR] = dataStoreHandle
+        self.__dict__[DATA_STORE_HANDLE_KIND_ATTR] = data_store_kind
         self.__dict__[NAME_ATTR] = name
 
     def __getattr__(self, field):
         """
         Hook when an attribute is fetched.
         """
-        store = getattr(self, DATA_STORE_HANDLE_ATTR)
+        store = globalvars.get_data_store(getattr(self, DATA_STORE_HANDLE_KIND_ATTR))
         object_name = getattr(self, NAME_ATTR)
         ## Field is not used in get intentionally
         ## zoobars.clients["a"] = 0
@@ -50,6 +55,6 @@ class ObjectHandle(object):
         """
         Hook when an attribute is set.
         """
-        store = getattr(self, DATA_STORE_HANDLE_ATTR)
+        store = globalvars.get_data_store(getattr(self, DATA_STORE_HANDLE_KIND_ATTR))
         object_name = getattr(self, NAME_ATTR)
         store.set(object_name, field, value)

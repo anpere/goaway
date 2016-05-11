@@ -19,10 +19,10 @@ import threading
 import imp
 import types
 import uuid
-from config import ClusterConfig ## AP: imported so that main can create a config
 import yaml
-from datatypes.lockingcontainer import LockingContainer
 
+from config import ClusterConfig
+from datatypes.lockingcontainer import LockingContainer
 from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
 import goaway.objectconstructors as objectconstructors
@@ -204,7 +204,6 @@ def setup_logging(port):
     handler.setFormatter(formatter)
 
     root_logger = logging.getLogger('')
-    root_logger.handlers = []
     root_logger.addHandler(handler)
 
     # The following has been superceded by the root logger.
@@ -217,15 +216,13 @@ def setup_logging(port):
     werkzeug_logger.setLevel(logging.ERROR)
 
 
-def start_server(port, config):
+def start_server(port):
     """Start the cmd server. This method is blocking.
     Args:
         port: Port to run on.
-        config: Result of yaml.load'ing the config file.
     """
     # Re-initialize the uuid, in case this was a fork.
     globalvars.proc_uuid = uuid.uuid4()
-    globalvars.config = config ## AP: removed to fix issues with ^C and many globalvars running sigint
     debugOn = os.environ.get("DEBUG", False) == "true"
 
     setup_logging(port)
@@ -274,19 +271,13 @@ if __name__ == "__main__":
     debug("main is running")
     app.logger.debug("main is running")
     assert len(sys.argv) == 2
+
     config_path = sys.argv[1]
     app.logger.debug("Configpath :%s" % (config_path))
-    ## create datastores
-    globalvars.strictCentralizedDataStoreHandle = StrictCentralizedDataStoreHandle()
-    # config_path = os.path.expandvars("$GOAWAYPATH/%s" % (config_path))
-    debug("strict data store made")
+
     config = ClusterConfig(config_path)
-    config.add_spawner()
-    debug(config_path)
-    debug("starting server!")
-    ## initialize globals: config and datastores
     globalvars.config = config
-    # globalvars.eventualDataStoreHandle =
-    globalvars.strictCentralizedDataStoreHandle = StrictCentralized()
-    # globalvars.weakDataStoreHandle =
-    start_server(9060, config)
+    globalvars.init_data_stores()
+
+    debug("starting server!")
+    start_server(9060)

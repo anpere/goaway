@@ -18,13 +18,52 @@ config = None
 # RemoteControl initialized by Goaway.__init__.
 rc = None
 
-# Datastore handlers.
-strictCentralizedDataStoreHandle = None
-eventualDataStoreHandle = None
-weakDataStoreHandle = None
-
 # Unique identifier for this process
 proc_uuid = uuid.uuid4()
+
+# Datastore handles.
+# Initialized by goaway:__init__ on the spawner.
+# Initialized by cmdserver:__main__ on remotes.
+# Map from kind -> datastore instance.
+datastorehandles = {}
+STRICT_CENTRALIZED_KIND= "strict_centralized"
+WEAK_KIND = "weak_kind"
+ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND]
+
+def get_data_store(kind):
+    """Get a data store handle by its kind.
+    Args:
+        kind: The string name of the datastore kind.
+    Raises an exception if the data stores have not yet been initialized.
+    """
+    if kind not in ALL_KINDS:
+        raise RuntimeError("Unrecognized datastore kind", kind)
+
+    store = datastorehandles.get(kind)
+    if store == None:
+        raise RuntimeError("Datastore cannot be retrieved before initialization")
+    return store
+
+def init_data_stores():
+    """Intialize all data stores.
+    Requires that globalvars.config has already been set.
+    """
+    if config == None:
+        raise RuntimeError("init_data_stores called before config set")
+    if datastorehandles != {}:
+        raise RuntimeError("attempt to re-initialize datastores")
+
+    for kind in ALL_KINDS:
+        # These imports are down here to avoid circulatory problems. Unfortunate.
+        if kind == STRICT_CENTRALIZED_KIND:
+            from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
+            datastorehandles[STRICT_CENTRALIZED_KIND] = StrictCentralizedDataStoreHandle()
+        elif kind == WEAK_KIND:
+            from goaway.datastorehandle.weak import WeakDataStoreHandle
+            datastorehandles[WEAK_KIND] = WeakDataStoreHandle()
+        else:
+            raise RuntimeError("unrecognized kind", kind)
+
 
 ## TODO AP: miles thinks this is sketchy, remove it eventually
 def sigint(a, b):
