@@ -4,7 +4,7 @@ import goaway.globalvars as globalvars
 import goaway.rpc as rpc
 from goaway.common import RpcException
 from goaway.datastorehandle.datastorehandle import DataStoreHandle
-
+import threading
 
 class StrictCentralizedDataStoreHandle(DataStoreHandle):
     """ Represents a DataStore.
@@ -19,14 +19,19 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
     """
     def __init__(self):
         ## dictionary that store strict objects
+        self.data = {} # key: name of object; value: object dict
+        self.data_lock = threading.RLock()
 
-        pass
-
-    def create(self, name, default):
+    def create(self, name):
         """Creates a strict object in the datastore.
         Args:
             name: name of object in datastore.
         """
+        if self.is_master:
+            with self.data_lock:
+                self.data[name] = {}
+                return
+
         payload = {
             "consistency": "strict",
             "name": name,
@@ -40,6 +45,12 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
            name: name of object in datastore.
            field: field of the object in datastore
         """
+        if self.is_master:
+            try:
+                with self.data_lock:
+                    return self.data[name][field]
+            except KeyError:
+                raise AttributeError("Object<{}> has no such attribute '{}'".format(name, field))
         payload = {
             "consistency": "strict",
             "name": name,
@@ -56,6 +67,14 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
            field: field of the object in datastore
            value: value to set the field of object
         """
+        if self.is_master:
+            with self.data_lock:
+                try:
+                    self.data[name][field] = value
+                except KeyError:
+                    self.data[name] = {field: value}
+            return
+
         payload = {
             "consistency": "strict",
             "name": name,
