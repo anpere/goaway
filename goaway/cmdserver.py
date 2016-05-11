@@ -189,11 +189,11 @@ def release_lock():
     res = {"ok": "false"}
     return jsonify(res)
 
-@app.route("/serreadfast/acquire", methods=["POST"])
-def serreadfast_acquire():
+@app.route("/linfastread/acquire", methods=["POST"])
+def linfastread_acquire():
     name = request.json["name"]
     field = request.json["field"]
-    store = globalvars.get_data_store(globalvars.LIN_READ_FAST_KIND)
+    store = globalvars.get_data_store(globalvars.LIN_FAST_READ_KIND)
     acquired = store._on_acquire(name, field)
     if acquired:
         res = {"success": True}
@@ -201,12 +201,12 @@ def serreadfast_acquire():
         res = {"success": False}
     return jsonify(res)
 
-@app.route("/serreadfast/update", methods=["POST"])
-def serreadfast_update():
+@app.route("/linfastread/update", methods=["POST"])
+def linfastread_update():
     name = request.json["name"]
     field = request.json["field"]
     value = request.json["value"]
-    store = globalvars.get_data_store(globalvars.LIN_READ_FAST_KIND)
+    store = globalvars.get_data_store(globalvars.LIN_FAST_READ_KIND)
     store._on_update(name, field, value)
     res = {"success": True}
     return jsonify(res)

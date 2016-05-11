@@ -15,4 +15,4 @@ class UpdateOnRelease(ObjectHandle):
 
 class LinFastRead(ObjectHandle):
     def __init__(self, name):
-        ObjectHandle.__init__(self, globalvars.LIN_READ_FAST_KIND, name)
+        ObjectHandle.__init__(self, globalvars.LIN_FAST_READ_KIND, name)

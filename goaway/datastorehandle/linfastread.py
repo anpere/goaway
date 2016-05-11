@@ -16,9 +16,8 @@ Entry = collections.namedtuple("Entry", ["value", "locked"])
 # value: the value of the object.
 # writing: Boolean as to whether a write is occurring. This is semantically a lock.
 
-class LinReadFastDataStoreHandle(DataStoreHandle):
-    """A maybe-serializable data store optimized for reads.
-    TODO not linearizable. rename.
+class LinFastReadDataStoreHandle(DataStoreHandle):
+    """A linearizable data store optimized for reads.
 
     All (name, field) values in this datastore default to None.
 
@@ -81,11 +80,11 @@ class LinReadFastDataStoreHandle(DataStoreHandle):
         """
         while True:
             payload = {
-                "consistency": globalvars.LIN_READ_FAST_KIND,
+                "consistency": globalvars.LIN_FAST_READ_KIND,
                 "name": name,
                 "field": field,
             }
-            resj = rpc.rpc("POST", self._server_url(server_address, "serreadfast/acquire"), payload)
+            resj = rpc.rpc("POST", self._server_url(server_address, "linfastread/acquire"), payload)
 
             if resj.get("success") == True:
                 return
@@ -98,12 +97,12 @@ class LinReadFastDataStoreHandle(DataStoreHandle):
         Guaranteed to succeed immediately. (in the absence of network failures)
         """
         payload = {
-            "consistency": globalvars.LIN_READ_FAST_KIND,
+            "consistency": globalvars.LIN_FAST_READ_KIND,
             "name": name,
             "field": field,
             "value": value,
         }
-        resj = rpc.rpc("POST", self._server_url(server_address, "serreadfast/update"), payload)
+        resj = rpc.rpc("POST", self._server_url(server_address, "linfastread/update"), payload)
         assert resj.get("success") == True
 
     def _on_acquire(self, name, field):

@@ -33,10 +33,10 @@ proc_uuid = uuid.uuid4()
 # Map from kind -> datastore instance.
 datastorehandles = {}
 STRICT_CENTRALIZED_KIND= "strict_centralized_kind"
-LIN_READ_FAST_KIND = "lin_read_fast_kind"
+LIN_FAST_READ_KIND = "lin_fast_read_kind"
 WEAK_KIND = "weak_kind"
 RELEASE_KIND = "release_kind"
-ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_READ_FAST_KIND]
+ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_FAST_READ_KIND]
 
 def get_data_store(kind):
     """Get a data store handle by its kind.
@@ -69,9 +69,9 @@ def init_data_stores():
         elif kind == WEAK_KIND:
             from goaway.datastorehandle.weak import WeakDataStoreHandle
             datastorehandles[kind] = WeakDataStoreHandle()
-        elif kind == LIN_READ_FAST_KIND:
-            from goaway.datastorehandle.linreadfast import LinReadFastDataStoreHandle
-            datastorehandles[kind] = LinReadFastDataStoreHandle()
+        elif kind == LIN_FAST_READ_KIND:
+            from goaway.datastorehandle.linfastread import LinFastReadDataStoreHandle
+            datastorehandles[kind] = LinFastReadDataStoreHandle()
         else:
             raise RuntimeError("unrecognized kind", kind)
 

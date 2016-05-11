@@ -2,6 +2,7 @@
 A test of GoAway's fast read storage.
 A bunch of goaway threads issue many reads and a few writes.
 They aggregate how long each one took.
+Some stats are printed at the end.
 
 Owner: mlsteele
 Status: Works.
@@ -15,9 +16,9 @@ import goaway
 import common
 
 # How many reads and writes each worker issues.
-NREADS = 1000
-NWRITES = 10
-NWORKERS = 5
+NREADS = 500
+NWRITES = 5
+NWORKERS = 1
 
 # Lock to guard stats.
 lock = goaway.Lock("lock")
