@@ -91,9 +91,6 @@ def run():
             module = imp.load_module(module_name, s_file, function_path, s_description)
             imported_modules[module_name] = module
 
-    ## TODO don't import modules that have already been imported
-    ## if module_na not in getModules():
-    ##     imp.load_source(module_name, function_path)
     function = getattr(module, function_name)
     logger.info("server starting: %s %s %s", function.__name__, function_args, function_kwargs)
     _run_in_thread(function, *function_args, **function_kwargs)
@@ -263,15 +260,6 @@ def start_server(port, logging_has_been_setup=False):
         sys.exit(0)
     except Exception as ex:
         logging.exception(ex, exc_info=True)
-
-## imported from http://stackoverflow.com/questions/4858100/how-to-list-imported-modules
-def getModules():
-    ''' Returns a list of the modules that have been  imported '''
-    modules = []
-    for name, val in globals().items():
-        if isInstance(val, types.ModuleType):
-            modules.append(val.__name__)
-
 
 if __name__ == "__main__":
     """Usage: cmdserver.py <host> <port> <config_path>"""
