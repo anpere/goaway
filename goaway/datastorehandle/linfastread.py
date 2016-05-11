@@ -32,7 +32,7 @@ class LinFastReadDataStoreHandle(DataStoreHandle):
     def __init__(self):
         # key: tuple of (name, field)
         # value: Entry
-        self.data = {} # key: name of object; value: object dict
+        self.data = {} # key: name of object; value: Entry
         # Lock to make access threadsafe.
         self.data_lock = threading.RLock()
 
