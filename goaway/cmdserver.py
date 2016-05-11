@@ -274,17 +274,20 @@ def getModules():
 
 
 if __name__ == "__main__":
-    """Usage: cmdserver.py <config_path> <port>"""
-    assert len(sys.argv) == 3
-    config_path = sys.argv[1]
+    """Usage: cmdserver.py <host> <port> <config_path>"""
+    assert len(sys.argv) == 4
+    server_host = sys.argv[1]
     port = int(sys.argv[2])
+    config_path = sys.argv[3]
 
     setup_logging(port)
 
     debug("main is running")
     logger.debug("main is running")
 
-    config_path = sys.argv[1]
+    # Must be initialized before config.
+    globalvars.server_host = server_host
+
     logger.debug("Configpath :%s" % (config_path))
 
     config = ClusterConfig(config_path)

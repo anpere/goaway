@@ -1,5 +1,7 @@
 import collections
 import yaml
+import localip
+import goaway.globalvars as globalvars
 
 
 class ClusterConfig(object):
@@ -19,7 +21,18 @@ class ClusterConfig(object):
         self.local_path = config_path
         self.remote_path = self.data["remote_config_path"]
         self.spawner_server = _split_server_address(self.data["spawner_server"])
+
+        # Hack to get server_host initialized on the spawner.
+        if globalvars.server_host == None:
+            globalvars.server_host = self.spawner_server.host
+
+        # List of non-spawner servers.
         self.servers = map(_split_server_address, self.data["remote_servers"])
+        # List of all server addresses, with the spawner first.
+        self.all_servers = [self.spawner_server] + self.servers
+        # List of all server addresses which are not on this machine.
+        self.all_other_servers = [s for s in self.all_servers if s.host != globalvars.server_host]
+        assert len(self.all_servers) > len(self.all_other_servers)
 
 
 ServerAddress = collections.namedtuple("ServerAddress", ["user", "host", "port"])

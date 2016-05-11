@@ -16,9 +16,15 @@ import signal
 config = None
 
 # RemoteControl initialized by Goaway.__init__.
+# Only populated on the spawner.
 rc = None
 
+# Server host (ip) as informed by being the spawner of a command line argument.
+server_host = None
+
 # Unique identifier for this process
+# Initialized by ClusterConfig:__init__ on the spawner.
+# Initialized by cmdserver:__main__ on remotes.
 proc_uuid = uuid.uuid4()
 
 # Datastore handles.
