@@ -25,7 +25,7 @@ def addKey(a, b=0):
 def mathSqrt(x):
     return math.sqrt(x)
 
-stringStrict = makeStrictCentralized("stringStrict")
+stringStrict = StrictCentralized("stringStrict")
 
 def grow_shared(append_string):
     """Grow a shared string.

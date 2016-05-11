@@ -11,7 +11,7 @@ logsetup.setup()
 
 import rpc
 from remotecontrol import RemoteControl
-from objectconstructors import *
+from objectconstructors import StrictCentralized, LinReadFast
 from datastorehandle.weak import WeakDataStoreHandle
 from datatypes import *
 from datatypes.lock import Lock
@@ -51,6 +51,3 @@ def goaway(fn, *args, **kwargs):
     ## TODO: probably take a pickled function
     file_name = inspect.getfile(fn)
     globalvars.rc.goaway(file_name, name, *args, **kwargs)
-
-def makeStrictCentralized(name):
-    return StrictCentralized(name)
