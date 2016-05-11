@@ -128,12 +128,15 @@ def data_get():
     consistency = request.json["consistency"]
     name = request.json["name"]
     field = request.json["field"]
-    value = "NONE"
+    value = ""
     error = "ok"
     if consistency == "strict":
         store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
         with store_lock:
-            value, error = globalvars.strictCentralizedDataStoreHandle.get(name, field)
+            try:
+                value = store.get(name, field)
+            except AttributeError as ex:
+                error = str(ex)
         res = {
             "value" : value,
             "error" : error,
@@ -237,8 +240,6 @@ def start_server(port, logging_has_been_setup=False):
     ##    imp.load_source(module_name, module_path)
 
     debug("start_server running")
-    # Show a separator.
-    app.logger.info("Starting server..." + "\n" * 5 + "-" * 20 + "\n" * 5)
     if debugOn:
         app.logger.warn("Server debug is on")
 
@@ -271,12 +272,15 @@ def getModules():
 
 
 if __name__ == "__main__":
+    # Show a separator.
+    app.logger.info("Starting server..." + "\n" * 5 + "-" * 20 + "\n" * 5)
+
     # TODO this should be passed in on cmdline.
     port = 9060
     setup_logging(port)
 
     debug("main is running")
-    app.logger.debug("main is running")
+    logging.debug("main is running")
     assert len(sys.argv) == 2
 
     config_path = sys.argv[1]
