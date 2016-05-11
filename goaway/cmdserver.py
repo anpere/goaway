@@ -27,6 +27,8 @@ from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
 import goaway.objectconstructors as objectconstructors
 
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 
 # TODO remove this
@@ -53,7 +55,7 @@ def check():
 
 @app.route("/kill", methods=["POST"])
 def kill():
-    app.logger.info("server killed")
+    logger.info("server killed")
     kill_server()
     return "killed server"
 
@@ -74,10 +76,10 @@ def run():
     function_args = call["args"]
     function_path = call["function_file"]
     function_kwargs = call["kwargs"]
-    # app.logger.warning("file:%s"%(function_path))
-    # app.logger.warning("file path:%s"% (os.getcwd()))
+    # logger.warning("file:%s"%(function_path))
+    # logger.warning("file path:%s"% (os.getcwd()))
     module_name = inspect.getmodulename(function_path)
-    # app.logger.warning(module_name)
+    # logger.warning(module_name)
     s_file = open(function_path, 'U')
     s_description = ('.py', 'U', 1)
 
@@ -93,7 +95,7 @@ def run():
     ## if module_na not in getModules():
     ##     imp.load_source(module_name, function_path)
     function = getattr(module, function_name)
-    app.logger.info("server starting: %s %s %s", function.__name__, function_args, function_kwargs)
+    logger.info("server starting: %s %s %s", function.__name__, function_args, function_kwargs)
     _run_in_thread(function, *function_args, **function_kwargs)
     return jsonify({"ok": "ok"})
 
@@ -173,7 +175,7 @@ def acquire_lock():
                 res = {"ok": "false"}
                 return jsonify(res)
         locks[lock_name] = requester_uuid
-    app.logger.debug("lock [%s] acquired by [%s]", lock_name, requester_uuid)
+    logger.debug("lock [%s] acquired by [%s]", lock_name, requester_uuid)
     res = {"ok": "ok"}
     return jsonify(res)
 
@@ -184,7 +186,7 @@ def release_lock():
     lock_name = request.json['name']
     with locks_lock:
         locks[lock_name] = None
-        app.logger.debug("lock [%s] released", lock_name)
+        logger.debug("lock [%s] released", lock_name)
         res = {"ok": "ok"}
         return jsonify(res)
     res = {"ok": "false"}
@@ -212,8 +214,8 @@ def setup_logging(port):
     root_logger.addHandler(handler)
 
     # The following has been superceded by the root logger.
-    # app.logger.handlers = []
-    # app.logger.addHandler(handler)
+    # logger.handlers = []
+    # logger.addHandler(handler)
     werkzeug_logger = logging.getLogger("werkzeug")
     # werkzeug_logger.handlers = []
     # werkzeug_logger.addHandler(handler)
@@ -241,7 +243,7 @@ def start_server(port, logging_has_been_setup=False):
 
     debug("start_server running")
     if debugOn:
-        app.logger.warn("Server debug is on")
+        logger.warn("Server debug is on")
 
     try:
         # Always disable auto-reloader.
@@ -280,10 +282,10 @@ if __name__ == "__main__":
     setup_logging(port)
 
     debug("main is running")
-    app.logger.debug("main is running")
+    logger.debug("main is running")
 
     config_path = sys.argv[1]
-    app.logger.debug("Configpath :%s" % (config_path))
+    logger.debug("Configpath :%s" % (config_path))
 
     config = ClusterConfig(config_path)
     globalvars.config = config
