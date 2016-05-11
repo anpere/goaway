@@ -28,12 +28,10 @@ class StrictCentralizedDataStoreHandle(DataStoreHandle):
         self.data_lock = threading.RLock()
 
         assert globalvars.config != None
-        self.master_server_address = globalvars.config.servers[0]
+        self.master_server_address = globalvars.config.spawner_server
 
         # Decide whether we are the data master for this store.
-        # TODO re-enable this.
-        # self.is_master = self.master_server_address.host in (localip.ipv4_addresses() + localip.ipv6_addresses())
-        self.is_master = False
+        self.is_master = self.master_server_address.host in (localip.ipv4_addresses() + localip.ipv6_addresses())
 
         # TODO delete this
         print "-" * 20

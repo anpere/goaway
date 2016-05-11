@@ -29,9 +29,7 @@ import goaway.objectconstructors as objectconstructors
 
 app = Flask(__name__)
 
-# Storage for StrictCentralizedDatastore
-# TODO rename this.
-store = {}
+# TODO remove this
 store_lock = threading.RLock()
 
 locks_lock = threading.RLock() # hee hee hee
@@ -113,6 +111,7 @@ def data_create():
             if name not in store:
                 globalvars.strictCentralizedDataStoreHandle.create(name)
     elif consistency=="eventual":
+        raise RuntimeError("EVENTUAL NOT IMPL")
         globalvars.eventualDataStoreHandle.create(name)
 
 
@@ -131,12 +130,14 @@ def data_get():
     field = request.json["field"]
     value = "NONE"
     error = "ok"
-    if consistency=="strict":
+    if consistency == "strict":
+        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
         with store_lock:
             value, error = globalvars.strictCentralizedDataStoreHandle.get(name, field)
-    res = { "value" : value,
-          "error" : error,
-          }
+        res = {
+            "value" : value,
+            "error" : error,
+        }
 
     return jsonify(res)
 
@@ -152,8 +153,9 @@ def data_set():
     value = request.json["value"]
 
     if consistency=="strict":
+        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
         with store_lock:
-            globalvars.strictCentralizedDataStoreHandle.set(name, field, value)
+            store.set(name, field, value)
     res = {"ok": "ok"}
     return jsonify(res)
 
