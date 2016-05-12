@@ -91,11 +91,6 @@ class RemoteControl(object):
             src_path, trg_path = file_paths.split(" ")
             src_path = src_path + "/"
             trg_path = trg_path + "/"
-            if "$GOAWAYPATH" in src_path or  "$GOAWAYPATH" in trg_path:
-                try:
-                    os.environ["GOAWAYPATH"]
-                except KeyError:
-                    sys.exit("no goawaypath defined")
             rsync_ignore_path = os.path.join(globalvars.goaway_lib_abspath, "rsync_ignore.txt")
             rsync_command = ('rsync -r --exclude-from %s "%s" "%s:%s"'
                              % (rsync_ignore_path, src_path, user + "@" + host, trg_path))
