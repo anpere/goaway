@@ -2,9 +2,8 @@
 distributed computing with flexible consistency models
 
 # Directory Organization
-- `README.md` (This readme file)
-- `goaway` (Library code)
-- `examples` (Example usage and demos). All of the examples assume you have a working config file named remote.yaml.
+- `goaway` - Library code
+- `examples` - Example usage and demos. All of the examples assume you have a working config file named remote.yaml.
 
 # Setup
 On each computer in the cluster (spawner and remotes), you need to:
