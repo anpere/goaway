@@ -22,7 +22,6 @@ import uuid
 import yaml
 
 from config import ClusterConfig
-from datatypes.lockingcontainer import LockingContainer
 from goaway import globalvars ## AP: removed to temporarily fix problems with ^C
 from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
 import goaway.objectconstructors as objectconstructors
@@ -39,7 +38,8 @@ locks = {} # key: lock name (string); value: owner's uuid or None if unheld
 
 # Keep track of which modules have been imported.
 # (Container of) dict from module name to module if imported.
-imported_modules_locked = LockingContainer({})
+imported_modules_lock = threading.RLock()
+imported_modules = {}
 
 
 @app.route("/", methods=["GET"])
@@ -84,7 +84,7 @@ def run():
     s_description = ('.py', 'U', 1)
 
     # Import the module or fetch it if already imported.
-    with imported_modules_locked as imported_modules:
+    with imported_modules_lock:
         if imported_modules.get(module_name):
             module = imported_modules[module_name]
         else:
