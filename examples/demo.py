@@ -8,7 +8,7 @@ import os
 import math
 import time
 
-from goaway import *
+import goaway
 
 def square(x):
     r = x*x
@@ -40,62 +40,45 @@ def mathSqrt(x):
     mathStore.mathSqrt = r
     return r
 
-mathStore = StrictCentralized("mathStore")
-stringStrict = StrictCentralized("stringStrict")
-
-def grow_shared(append_string):
-    """Grow a shared string.
-    Appends append_string to the shared string.
-    This is not an atomic operation and may lose append_string.
-    """
-    stringStrict.value += append_string
+# Stores the results of our math operations
+mathStore = goaway.StrictCentralized("mathStore")
 
 if __name__ == "__main__":
 
     num_of_servers = 6
-    init(os.path.join(os.path.dirname(__file__), 'remote.yaml'))
+    goaway.init(os.path.join(os.path.dirname(__file__), 'remote.yaml'))
 
     ## Verifies goaway can run some straightforward functions
     mathStore.square = None
     mathStore.cube = None
     mathStore.sqrt = None
 
-    goaway(square, 1)
-    goaway(cube, 2)
-    goaway(sqrt, 3)
+    goaway.goaway(square, 1)
+    goaway.goaway(cube, 2)
+    goaway.goaway(sqrt, 3)
 
     while mathStore.square == None or mathStore.cube == None or mathStore.sqrt == None:
         pass
     assert mathStore.square == square(1)
     assert mathStore.cube == cube(2)
     assert mathStore.sqrt == sqrt(3)
+    print "Assertions passed!"
 
     ## Makes sure another function can run on another machine
     for i in range(num_of_servers):
-        goaway(square, i)
+        goaway.goaway(square, i)
 
     ## Verify goaway can run a function that takes multiple arguments on another machine
     for i in range(num_of_servers):
-        goaway(add, i, 1)
-        goaway(add, i, 2*i)
+        goaway.goaway(add, i, 1)
+        goaway.goaway(add, i, 2*i)
 
     ## Verify goaway can run a function that takes keyword arguments on another machine
     for i in range(num_of_servers):
-        goaway(addKey, i)
-        goaway(addKey, i, b=2*i)
+        goaway.goaway(addKey, i)
+        goaway.goaway(addKey, i, b=2*i)
 
     ## Verify goaway can run a function that imports another library another machine
     for i in range(num_of_servers):
-        goaway(mathSqrt, i)
+        goaway.goaway(mathSqrt, i)
 
-    ## Verify distributed shared memory works
-    ## Note: This is not guaranteed to produce "muahahaa" because they may not be in order
-    ## and some goaway may overwrite the result of another.
-    stringStrict.value = ""
-    goaway(grow_shared, "mua")
-    goaway(grow_shared, "ha")
-    goaway(grow_shared, "haa")
-    print "Waiting for goaways to finish..."
-    time.sleep(3)
-    print "And now for the final result:"
-    print stringStrict.value
