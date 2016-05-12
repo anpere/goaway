@@ -8,6 +8,7 @@ Status: in-progress
 
 import sys
 import os
+from time import sleep
 
 import goaway
 import common
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     rc.y = -10
     y_goal = 0
 
-    for i in range(goal):
+    for i in range(x_goal):
         goaway.goaway(inc_and_dec)
 
     while rc.x < x_goal:

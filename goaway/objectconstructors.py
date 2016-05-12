@@ -27,11 +27,7 @@ class UpdateOnRelease(ObjectHandle):
 
     def acquire(self):
         ## 1. Acquire the object's lock
-        store = globalvars.get_data_store(getattr(self, DATA_STORE_HANDLE_KIND_ATTR))
-        object_name = getattr(self, NAME_ATTR)
-        store.acquire(object_name)
+        globalvars.get_data_store(globalvars.RELEASE_KIND).acquire(getattr(self, NAME_ATTR))
 
     def release(self):
-        store = globalvars.get_data_store(getattr(self, DATA_STORE_HANDLE_KIND_ATTR))
-        object_name = getattr(self, NAME_ATTR)
-        store.release(object_name)
+        globalvars.get_data_store(globalvars.RELEASE_KIND).release(getattr(self, NAME_ATTR))

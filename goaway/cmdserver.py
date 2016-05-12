@@ -217,10 +217,12 @@ def linfastread_update():
 @app.route("/updateonrelease/update", methods=["POST"])
 def updateonrelease_update():
     operations = request.json["operations"]
-    store = globalwars.get_data_store(globalvars.RELEASE_KIND)
+    store = globalvars.get_data_store(globalvars.RELEASE_KIND)
     for operation in operations:
        name, field, value = operation
        store.set(name, field, value)
+    res = {"success": True}
+    return jsonify(res)
 
 def _run_in_thread(function, *args, **kwargs):
     """Run a function in a daemon thread."""

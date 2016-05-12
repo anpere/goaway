@@ -5,7 +5,9 @@ import goaway.rpc as rpc
 from goaway.common import RpcException
 from goaway.datastorehandle.datastorehandle import DataStoreHandle
 import goaway.localip as localip
+from goaway.datatypes.lock import Lock
 
+Operation = collections.namedtuple("Operation", ["name", "field", "value"])
 class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
     """
     Represents an datastore that ensures accesses to objects in the data store
@@ -15,7 +17,6 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
     Changes made to the object are propogated when that object's lock has
     been released
     """
-    Operation = collections.namedtuple("Operation", ["name", "field", "value"])
     def __init__(self):
         self.data = {}
         self.locks = {}
@@ -41,7 +42,7 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
         }
 
         for server_address in globalvars.config.all_other_servers:
-            resj = rpc.rpc("POST", self._server_url(server_address, "/update"), payload)
+            resj = rpc.rpc("POST", self._server_url(server_address, "updateonrelease/update"), payload)
         ## 2. clear buffer
         self.buffers[name] = []
         ## 3. Release the lock
@@ -52,15 +53,18 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
 
     def set(self, name, field, value):
         ## write to that object's local cache
-        self.data[name][field] = value
-        ## log the operation to that object's operation buffer
         try:
-            object_buffer = self.buffer[name]
-            object_buffer.append(Operation(name, field, value))
-            self.buffer[name] = object_buffer
+            self.data[name][field] = value
         except KeyError:
-            self.buffer[name] = []
-            self.buffer[name].append(Operation(name, field, value))
+            self.data[name] = {field:value}
+            ## log the operation to that object's operation buffer
+        try:
+            object_buffer = self.buffers[name]
+            object_buffer.append(Operation(name, field, value))
+            self.buffers[name] = object_buffer
+        except KeyError:
+            self.buffers[name] = []
+            self.buffers[name].append(Operation(name, field, value))
 
     def _server_url(self, server_address, url_subpath):
         return "http://{}:{}/{}".format(server_address.host, server_address.port, url_subpath)
