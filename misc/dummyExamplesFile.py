@@ -1,9 +1,0 @@
-import math
-def square(x):
-    return x*x
-def cube(x):
-    return x*x*x
-def sqrt(x):
-    return math.sqrt(x)
-def sleep(x):
-    return time.sleep(x)
