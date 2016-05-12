@@ -40,6 +40,9 @@ class RemoteControl(object):
             print "local ips: {}".format(localip.ipv4_addresses())
             raise RuntimeError("spawner_server ip is not one of your ips", self._config.spawner_server[1])
 
+        # Index of the last server sent a goaway.
+        self._last_server_index = 0
+
         self.server_addresses = self._config.servers
         self.file_paths = self._config.data["filepaths"]
 
@@ -55,6 +58,7 @@ class RemoteControl(object):
         """Start all remote servers and one local server."""
         for user, host, port in self.server_addresses:
                 remoteHost = "%s@%s" % (user, host)
+                logger.info("starting remote server %s:%s", host, port)
                 command = ("cd ~/goaway;" +
                         "find . -name '*.pyc' -delete ;" +
                         "DEBUG=true goaway/cmdserver.py %s %s %s >> server.std.log 2>&1" % (
@@ -70,7 +74,7 @@ class RemoteControl(object):
 
     def _start_local_server(self):
         user, host, port = self._config.spawner_server
-        logger.info("Starting local server %s:%s", host, port)
+        logger.info("starting local server %s:%s", host, port)
         thread = threading.Thread(
             target=lambda: cmdserver.start_server(port=port))
         # https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Process.daemon
@@ -144,7 +148,13 @@ class RemoteControl(object):
         return
 
     def goaway(self, file_name, function_name, *args, **kwargs):
-        server_address = self.random_server_address()
+        """Run a function on a server in the cluster.
+        The server is chosen by (local) round-robin.
+        """
+        self._last_server_index += 1
+        self._last_server_index %= len(globalvars.config.all_servers)
+        # server_address = self.random_server_address()
+        server_address = globalvars.config.all_servers[self._last_server_index]
         self.run_on_server(server_address, file_name, function_name, *args, **kwargs)
 
     def random_server_address(self):
