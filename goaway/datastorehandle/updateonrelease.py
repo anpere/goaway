@@ -24,19 +24,20 @@ class UpdateOnReleaseDataStoreHandle(DataStoreHandle):
         assert globalvars.config != None
 
     def acquire(self, name):
-        ## TODO: delete the operations buffer?
+        print "acquiring"
         try:
             self.locks[name].acquire
         except KeyError:
             self.locks[name] = Lock(name)
             self.buffers[name] = []
+            self.locks[name].acquire()
 
     def release(self, name):
         ## 0. Get operations buffer
+        print "releasing!!"
         operations = self.buffers[name]
         ## 1. propogate operations buffer to the rest of the servers
         payload = {
-            "consistency": "update",
             "name": name,
             "operations" : operations,
         }

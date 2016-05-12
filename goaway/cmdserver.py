@@ -216,6 +216,7 @@ def linfastread_update():
 
 @app.route("/updateonrelease/update", methods=["POST"])
 def updateonrelease_update():
+    print "updating!"
     operations = request.json["operations"]
     store = globalvars.get_data_store(globalvars.RELEASE_KIND)
     for operation in operations:
