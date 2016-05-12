@@ -92,7 +92,9 @@ class RemoteControl(object):
                     os.environ["GOAWAYPATH"]
                 except KeyError:
                     sys.exit("no goawaypath defined")
-            rsync_command = 'rsync -r --exclude-from rsync_ignore.txt "%s" "%s:%s"' % (src_path, user + "@" + host, trg_path)
+            rsync_ignore_path = os.path.join(globalvars.goaway_lib_abspath, "rsync_ignore.txt")
+            rsync_command = ('rsync -r --exclude-from %s "%s" "%s:%s"'
+                             % (rsync_ignore_path, src_path, user + "@" + host, trg_path))
             logger.debug(rsync_command)
             os.system(rsync_command)
             logger.debug("done rysncing")

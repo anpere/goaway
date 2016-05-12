@@ -33,6 +33,9 @@ server_host = None
 # Initialized by cmdserver:__main__ on remotes.
 proc_uuid = uuid.uuid4()
 
+# Absolute path of goaway library.
+goaway_lib_abspath = os.path.abspath(os.path.dirname(__file__))
+
 # Datastore handles.
 # Initialized by goaway:__init__ on the spawner.
 # Initialized by cmdserver:__main__ on remotes.
