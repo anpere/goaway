@@ -9,6 +9,7 @@ import sys
 import os
 import uuid
 import signal
+import threading
 
 # A config.ClusterConfig of the active config.
 # Initialized by cmdserver.start_server.
@@ -18,6 +19,11 @@ config = None
 # RemoteControl initialized by Goaway.__init__.
 # Only populated on the spawner.
 rc = None
+
+# Number of outgoing goaway requests
+# Only used by the spawner.
+outgoing_lock = threading.RLock()
+outgoing = 0
 
 # Server host (ip) as informed by being the spawner of a command line argument.
 server_host = None

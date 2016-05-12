@@ -16,10 +16,10 @@ class UpdateOnRelease(ObjectHandle):
 
     def acquire(self):
         ## 1. Acquire the object's lock
-        globalvars.get_data_store(globalvars.RELEASE_KIND).acquire(getattr(self, NAME_ATTR))
+        globalvars.get_data_store(globalvars.RELEASE).acquire(getattr(self, NAME_ATTR))
 
     def release(self):
-        globalvars.get_data_store(globalvars.RELEASE_KIND).release(getattr(self, NAME_ATTR))
+        globalvars.get_data_store(globalvars.RELEASE).release(getattr(self, NAME_ATTR))
 
 class LinFastRead(ObjectHandle):
     def __init__(self, name):
@@ -30,4 +30,4 @@ class Weak(ObjectHandle):
         ObjectHandle.__init__(self, globalvars.WEAK, name)
 
     def sync(self):
-        globalvars.get_data_store(globalvars.WEAK_KIND).sync(getattr(self, NAME_ATTR))
+        globalvars.get_data_store(globalvars.WEAK).sync(getattr(self, NAME_ATTR))

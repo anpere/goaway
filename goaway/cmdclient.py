@@ -42,7 +42,7 @@ class CmdClient(object):
             else:
                 return False
         except requests.exceptions.RequestException as ex:
-            logging.warn("server not killed %s", ex)
+            logging.debug("server not killed %s", ex)
             return False
 
     def run_remote(self, file_name, function_name, *args, **kwargs):

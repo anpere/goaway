@@ -3,9 +3,6 @@ A test of GoAway's fast read storage.
 A bunch of goaway threads issue many reads and a few writes.
 They aggregate how long each one took.
 Some stats are printed at the end.
-
-Owner: mlsteele
-Status: Works.
 """
 import sys
 import os
@@ -13,7 +10,6 @@ import time
 import random
 
 import goaway
-import common
 
 # How many reads and writes each worker issues.
 NREADS = 500
@@ -52,10 +48,9 @@ def worker(n):
         stats.done += 1
 
 if __name__ == "__main__":
-    config_path = common.select_config()
 
     # Initialize GoAway.
-    goaway.init(config_path)
+    goaway.init(os.path.join(os.path.dirname(__file__), 'remote.yaml'))
 
     stats.read_time = 0
     stats.read_count = 0

@@ -1,16 +1,12 @@
 """
-A test of GoAway locks.
-Increments a counter guarded by a lock 10 times.
-
-Owner: jessk
-Status: Works
+A demo of the Weak datastore protocol.
+Values are consistent after calling sync().
 """
 import sys
 import os
 from time import sleep
 
 import goaway
-import common
 
 s = goaway.Weak("s")
 

@@ -1,8 +1,5 @@
 """
-A test of GoAway locks.
-Increments a counter guarded by a lock 10 times.
-
-Owner: anpere
+TODO description
 Status: in-progress
 """
 
@@ -11,7 +8,6 @@ import os
 from time import sleep
 
 import goaway
-import common
 
 rc = goaway.UpdateOnRelease("rc")
 
@@ -22,10 +18,9 @@ def inc_and_dec():
     rc.release()
 
 if __name__ == "__main__":
-    config_path = common.select_config()
 
     # Initialize GoAway.
-    goaway.init(config_path)
+    goaway.init(os.path.join(os.path.dirname(__file__), 'remote.yaml'))
     rc.acquire()
     rc.x = 0
     rc.y = 10

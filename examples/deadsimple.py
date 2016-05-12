@@ -7,9 +7,6 @@ import os
 import time
 
 import goaway
-import common
-
-goaway.logger.setLevel("CRITICAL")
 
 s = goaway.StrictCentralized("s")
 
@@ -17,8 +14,7 @@ def set_shared(x):
     s.val = x
 
 if __name__ == "__main__":
-    config_path = common.select_config()
-
+    config_path = os.path.join(os.path.dirname(__file__), 'remote.yaml')
     goaway.init(config_path)
 
     print "Started."

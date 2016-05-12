@@ -135,7 +135,10 @@ class RemoteControl(object):
     def run_on_server(self, server_address, file_name, function_name, *args, **kwargs):
         user, host, port = server_address
         logger.debug("running %s(%s) on %s:%s" % (function_name, args, host, port))
-        result = CmdClient(user, host, port).run_remote(file_name, function_name, *args, **kwargs)
+        threading.Thread(target=lambda:
+                CmdClient(user, host, port).run_remote(
+                    file_name, function_name, *args, **kwargs
+                )).start()
         return
 
     def goaway(self, file_name, function_name, *args, **kwargs):

@@ -3,10 +3,15 @@ remote_servers:
   - ubuntu@52.201.233.99:9060
   - ubuntu@54.172.108.227:9060
 
-spawner_server: your_ip:9060
+spawner_server: your_ip:9060 # Change this! Include the port you'd like the server to run on.
 
-# Path that the config file appears on the remote.
+# Path that the config file appears on the remote servers.
 remote_config_path: /home/ubuntu/goaway/examples/remote.yaml
 
+# List of source, destination pairs to sync to remotes and load into the remote environments
+# Should contain the application code.
+# Doesn't need to contain the goaway code if you've already installed the goaway module
+# on the remote computers, but if you haven't, you might as well sync it.
+# The first path is on your computer and the second is on the remotes
 filepaths:
-  - $GOAWAYPATH/ ~/goaway
+  - /home/you/goaway/ ~/goaway
