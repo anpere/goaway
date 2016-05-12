@@ -1,6 +1,8 @@
 # goaway
 distributed computing with flexible consistency models
 
+For a full description, [read the paper](https://github.com/anpere/goaway/raw/master/GoAway.pdf)
+
 # Directory Organization
 - `goaway` - Library code
 - `examples` - Example usage and demos. All of the examples assume you have a working config file named remote.yaml.
