@@ -80,7 +80,7 @@ class LinFastReadDataStoreHandle(DataStoreHandle):
         """
         while True:
             payload = {
-                "consistency": globalvars.LIN_FAST_READ_KIND,
+                "consistency": globalvars.LIN_FAST_READ,
                 "name": name,
                 "field": field,
             }
@@ -97,7 +97,7 @@ class LinFastReadDataStoreHandle(DataStoreHandle):
         Guaranteed to succeed immediately. (in the absence of network failures)
         """
         payload = {
-            "consistency": globalvars.LIN_FAST_READ_KIND,
+            "consistency": globalvars.LIN_FAST_READ,
             "name": name,
             "field": field,
             "value": value,

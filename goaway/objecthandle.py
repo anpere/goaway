@@ -18,15 +18,12 @@ class ObjectHandle(object):
         accumulators.flowers = 0
         accumulators.trees = 10
 
-    Args:
-        dataStoreName: ???
-        name: Name of the object, to identify it its store.
     """
     def __init__(self, data_store_kind, name):
         """
         Args:
-            store: The DataStoreHandle to use to manage state.
-            name: The unique identifier of the object.
+            data_store_kind: Name of the type of datastore to use (from globalvars)
+            name: Name of the object, to identify its store.
         """
         self.__dict__[DATA_STORE_HANDLE_KIND_ATTR] = data_store_kind
         self.__dict__[NAME_ATTR] = name
@@ -37,13 +34,6 @@ class ObjectHandle(object):
         """
         store = globalvars.get_data_store(getattr(self, DATA_STORE_HANDLE_KIND_ATTR))
         object_name = getattr(self, NAME_ATTR)
-        ## Field is not used in get intentionally
-        ## zoobars.clients["a"] = 0
-        ## money = zoobars.clients["a"]
-        ## getattr has to return a dictionary so it can be keyed by "a"
-
-        ## The cmdserver can return various types of data.
-        ## The cmdserver can return an integer, or it can return a dictionary
         value = store.get(object_name, field)
         return value
 

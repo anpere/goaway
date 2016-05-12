@@ -32,11 +32,11 @@ proc_uuid = uuid.uuid4()
 # Initialized by cmdserver:__main__ on remotes.
 # Map from kind -> datastore instance.
 datastorehandles = {}
-STRICT_CENTRALIZED_KIND= "strict_centralized_kind"
-LIN_FAST_READ_KIND = "lin_fast_read_kind"
-WEAK_KIND = "weak_kind"
-RELEASE_KIND = "release_kind"
-ALL_KINDS = [STRICT_CENTRALIZED_KIND, WEAK_KIND, LIN_FAST_READ_KIND, RELEASE_KIND]
+STRICT_CENTRALIZED = "strict"
+LIN_FAST_READ = "lin_fast_read"
+WEAK = "weak"
+RELEASE = "release"
+DATASTORE_TYPES = [STRICT_CENTRALIZED, WEAK, LIN_FAST_READ, RELEASE]
 
 def get_data_store(kind):
     """Get a data store handle by its kind.
@@ -44,7 +44,7 @@ def get_data_store(kind):
         kind: The string name of the datastore kind.
     Raises an exception if the data stores have not yet been initialized.
     """
-    if kind not in ALL_KINDS:
+    if kind not in DATASTORE_TYPES:
         raise RuntimeError("Unrecognized datastore kind", kind)
 
     store = datastorehandles.get(kind)
@@ -61,25 +61,23 @@ def init_data_stores():
     if datastorehandles != {}:
         raise RuntimeError("attempt to re-initialize datastores")
 
-    for kind in ALL_KINDS:
+    for kind in DATASTORE_TYPES:
         # These imports are down here to avoid circulatory problems. Unfortunate.
-        if kind == STRICT_CENTRALIZED_KIND:
+        if kind == STRICT_CENTRALIZED:
             from goaway.datastorehandle.strictcentralized import StrictCentralizedDataStoreHandle
             datastorehandles[kind] = StrictCentralizedDataStoreHandle()
-        elif kind == WEAK_KIND:
+        elif kind == WEAK:
             from goaway.datastorehandle.weak import WeakDataStoreHandle
             datastorehandles[kind] = WeakDataStoreHandle()
-        elif kind == LIN_FAST_READ_KIND:
+        elif kind == LIN_FAST_READ:
             from goaway.datastorehandle.linfastread import LinFastReadDataStoreHandle
             datastorehandles[kind] = LinFastReadDataStoreHandle()
-        elif kind == RELEASE_KIND:
+        elif kind == RELEASE:
             from goaway.datastorehandle.updateonrelease import UpdateOnReleaseDataStoreHandle
             datastorehandles[kind] = UpdateOnReleaseDataStoreHandle()
         else:
             raise RuntimeError("unrecognized kind", kind)
 
-
-## TODO AP: miles thinks this is sketchy, remove it eventually
 def sigint(a, b):
     """ This runs when user kills the program.
         Original intention is to kill the remote servers

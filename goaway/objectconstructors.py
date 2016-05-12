@@ -8,22 +8,11 @@ logger = logging.getLogger(__name__)
 
 class StrictCentralized(ObjectHandle):
     def __init__(self, name):
-        ObjectHandle.__init__(self, globalvars.STRICT_CENTRALIZED_KIND, name)
-
-class LinFastRead(ObjectHandle):
-    def __init__(self, name):
-        ObjectHandle.__init__(self, globalvars.LIN_FAST_READ_KIND, name)
-
-class Weak(ObjectHandle):
-    def __init__(self, name):
-        ObjectHandle.__init__(self, globalvars.WEAK_KIND, name)
-
-    def sync(self):
-        globalvars.get_data_store(globalvars.WEAK_KIND).sync(getattr(self, NAME_ATTR))
+        ObjectHandle.__init__(self, globalvars.STRICT_CENTRALIZED, name)
 
 class UpdateOnRelease(ObjectHandle):
     def __init__(self, name):
-        ObjectHandle.__init__(self, globalvars.RELEASE_KIND, name)
+       ObjectHandle.__init__(self, globalvars.RELEASE, name)
 
     def acquire(self):
         ## 1. Acquire the object's lock
@@ -31,3 +20,14 @@ class UpdateOnRelease(ObjectHandle):
 
     def release(self):
         globalvars.get_data_store(globalvars.RELEASE_KIND).release(getattr(self, NAME_ATTR))
+
+class LinFastRead(ObjectHandle):
+    def __init__(self, name):
+        ObjectHandle.__init__(self, globalvars.LIN_FAST_READ, name)
+
+class Weak(ObjectHandle):
+    def __init__(self, name):
+        ObjectHandle.__init__(self, globalvars.WEAK, name)
+
+    def sync(self):
+        globalvars.get_data_store(globalvars.WEAK_KIND).sync(getattr(self, NAME_ATTR))

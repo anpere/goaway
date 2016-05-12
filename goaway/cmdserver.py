@@ -130,7 +130,7 @@ def data_get():
     value = ""
     error = "ok"
     if consistency == "strict":
-        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
+        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED)
         with store_lock:
             try:
                 value = store.get(name, field)
@@ -155,11 +155,11 @@ def data_set():
     value = request.json["value"]
 
     if consistency=="strict":
-        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED_KIND)
+        store = globalvars.get_data_store(globalvars.STRICT_CENTRALIZED)
         with store_lock:
             store.set(name, field, value)
     elif consistency == "weak":
-        store = globalvars.get_data_store(globalvars.WEAK_KIND)
+        store = globalvars.get_data_store(globalvars.WEAK)
         store.receive_set(name, field, value)
     res = {"ok": "ok"}
     return jsonify(res)
@@ -196,7 +196,7 @@ def release_lock():
 def linfastread_acquire():
     name = request.json["name"]
     field = request.json["field"]
-    store = globalvars.get_data_store(globalvars.LIN_FAST_READ_KIND)
+    store = globalvars.get_data_store(globalvars.LIN_FAST_READ)
     acquired = store._on_acquire(name, field)
     if acquired:
         res = {"success": True}
@@ -209,7 +209,7 @@ def linfastread_update():
     name = request.json["name"]
     field = request.json["field"]
     value = request.json["value"]
-    store = globalvars.get_data_store(globalvars.LIN_FAST_READ_KIND)
+    store = globalvars.get_data_store(globalvars.LIN_FAST_READ)
     store._on_update(name, field, value)
     res = {"success": True}
     return jsonify(res)
@@ -239,7 +239,7 @@ def setup_logging(port):
     handler = logging.handlers.WatchedFileHandler(logfile)
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s")
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
 
     root_logger = logging.getLogger('')
