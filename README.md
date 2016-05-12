@@ -1,7 +1,7 @@
 # goaway
 distributed computing with flexible consistency models
 
-For a full description, [read the paper](https://github.com/anpere/goaway/raw/master/GoAway.pdf)
+For a full description, [read the paper](https://github.com/anpere/goaway/raw/master/GoAway.pdf) or [see the slides](https://github.com/anpere/raw/master/GoAway-slides.pdf).
 
 # Directory Organization
 - `goaway` - Library code
@@ -19,4 +19,3 @@ Fill in your [config file](https://github.com/anpere/goaway/blob/master/examples
 
 # Usage
 Check out the `examples` folder for a bunch of demo programs!
-
