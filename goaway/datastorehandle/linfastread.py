@@ -22,7 +22,7 @@ class LinFastReadDataStoreHandle(DataStoreHandle):
     All (name, field) values in this datastore default to None.
 
     Every node stores a local copy of all data.
-    Reads can be executed locally and will walways return immediately.
+    Reads can be executed locally and will always return immediately.
     Whenever a write is issued, a two-phase locking commit occurs:
       1. The object is frozen at all nodes. (expanding phase)
       2. The object is updated and unfrozen at all nodes. (shrinking phase)
